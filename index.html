@@ -796,17 +796,21 @@ function drawHistory() {
       const txt1 = month;
       const txt2 = 'US ' + d.us;
       const txt3 = 'KR ' + d.kr;
-      const bw = 72, bh = 56, bx = Math.min(x + 8, W - bw - 4), by = 8;
+      const bw = 72, bh = 56;
+      const bx = Math.min(x + 8, W - bw - 4);
+      const by = 8;
       ctx.fillStyle = 'rgba(10,20,35,0.92)';
-      ctx.beginPath();
-      ctx.roundRect(bx, by, bw, bh, 6);
-      ctx.fill();
-      ctx.fillStyle = '#aabbcc'; ctx.font = 'bold 10px JetBrains Mono';
-      ctx.fillText(txt1, bx + 8, by + 16);
-      ctx.fillStyle = '#4a9eff'; ctx.font = '10px JetBrains Mono';
-      ctx.fillText(txt2, bx + 8, by + 30);
-      ctx.fillStyle = '#ff6b35';
-      ctx.fillText(txt3, bx + 8, by + 44);
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      ctx.strokeRect(bx, by, bw, bh);
+      ctx.fillStyle = '#aabbcc'; ctx.font = 'bold 11px monospace';
+      ctx.fillText(txt1, bx + 8, by + 17);
+      ctx.fillStyle = '#4a9eff'; ctx.font = '11px monospace';
+      ctx.fillText(txt2, bx + 8, by + 32);
+      ctx.fillStyle = '#ff6b35'; ctx.font = '11px monospace';
+      ctx.fillText(txt3, bx + 8, by + 47);
     }
   }
 }
@@ -954,10 +958,15 @@ window.addEventListener('resize', drawHistory);
       window._chartHoverIdx = getHoverIndex(e);
       drawHistory();
     });
+    canvas.addEventListener('mouseout', function() {
+      window._chartHoverIdx = null;
+      drawHistory();
+    });
     canvas.addEventListener('mouseleave', function() {
       window._chartHoverIdx = null;
       drawHistory();
     });
+    canvas.style.cursor = 'crosshair';
     // 모바일 터치
     canvas.addEventListener('touchmove', function(e) {
       if (historyData.length < 2) return;
