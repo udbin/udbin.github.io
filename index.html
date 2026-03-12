@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="naver-site-verification" content="f4890a460aef1172dd971ef18c7ede9186cb6b2b" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 파비콘 -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png" />
+  <title>한국 공포탐욕지수 | KOSPI Fear & Greed</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9496300145102373" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #090c10;
+    --surface: #0f1520;
+    --border: #1e2a3a;
+    --text: #e8edf5;
+    --muted: #5a7090;
+    --extreme-fear: #ff2d55;
+    --fear: #ff6b35;
+    --neutral: #ffd60a;
+    --greed: #30d158;
+    --extreme-greed: #00e5ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(30,42,58,0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,42,58,0.4) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .header-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(135deg, #e8edf5 0%, #5a7090 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #last-update {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* MAIN GAUGES */
+  .gauges-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) { .gauges-row { grid-template-columns: 1fr; } }
+
+  .gauge-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gauge-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--muted));
+    transition: background 1s ease;
+  }
+  .market-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .market-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  /* GAUGE SVG */
+  .gauge-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .gauge-svg { width: 280px; height: 185px; }
+
+  /* NUMBER DISPLAY */
+  .score-display {
+    display: none;
+  }
+  .score-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    transition: color 1s ease;
+  }
+  .score-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    transition: color 1s ease;
+  }
+
+  /* MINI INDICATORS INSIDE CARD */
+  .indicators-mini {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ind-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .ind-name { color: var(--muted); }
+  .ind-bar-wrap { flex: 1; height: 3px; background: var(--border); margin: 0 12px; border-radius: 2px; }
+  .ind-bar { height: 100%; border-radius: 2px; transition: width 1.5s ease, background 1s ease; }
+  .ind-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    min-width: 30px;
+    text-align: right;
+  }
+
+  /* FORMULA SECTION */
+  .formula-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .formula-item {
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+  }
+  .formula-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--border);
+    position: absolute;
+    top: 8px; right: 14px;
+  }
+  .formula-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .formula-us {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .formula-kr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #4a9eff;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 8px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tag-same { background: rgba(48,209,88,0.1); color: var(--greed); border: 1px solid rgba(48,209,88,0.3); }
+  .tag-adapted { background: rgba(74,158,255,0.1); color: #4a9eff; border: 1px solid rgba(74,158,255,0.3); }
+
+  /* HISTORY CHART */
+  .history-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  #history-canvas { width: 100%; height: 120px; }
+
+  /* REFRESH BTN */
+  .btn-refresh {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 12px 32px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .btn-refresh:hover {
+    border-color: var(--text);
+    color: var(--text);
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--text);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* DISCLAIMER */
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.8;
+  }
+</style>
+  <!-- OG / SNS 공유 썸네일 -->
+  <meta property="og:title" content="공포탐욕지수 — 한국·미국 실시간" />
+  <meta property="og:description" content="KOSPI·S&P500 투자심리를 한눈에! 실시간 공포탐욕지수 대시보드" />
+  <meta property="og:image" content="https://feargreed.co.kr/thumbnail.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://feargreed.co.kr" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="공포탐욕지수 — 한국·미국 실시간" />
+  <meta name="twitter:description" content="KOSPI·S&P500 투자심리를 한눈에! 실시간 공포탐욕지수 대시보드" />
+  <meta name="twitter:image" content="https://feargreed.co.kr/thumbnail.png" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XPR8F86HQX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XPR8F86HQX');
+  </script>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-badge">REAL-TIME SENTIMENT TRACKER</div>
+    <h1>공포탐욕지수</h1>
+    <div class="subtitle">FEAR &amp; GREED INDEX — KOSPI &amp; S&amp;P500</div>
+    <div id="last-update" class="pulse">● 데이터 로딩 중...</div>
+  </header>
+
+  <!-- MAIN GAUGES -->
+  <div class="gauges-row">
+    <div class="gauge-card" id="card-us">
+      <div class="market-label">미국 시장</div>
+      <div class="market-name">S&amp;P 500 · NASDAQ</div>
+      <div class="gauge-wrapper">
+        <svg class="gauge-svg" viewBox="0 0 280 185" id="gauge-us"></svg>
+      </div>
+      <div class="score-display">
+        <div class="score-number" id="us-score">--</div>
+        <div class="score-label" id="us-label">로딩 중</div>
+      </div>
+      <div class="indicators-mini" id="us-indicators"></div>
+    </div>
+
+    <div class="gauge-card" id="card-kr">
+      <div class="market-label">한국 시장</div>
+      <div class="market-name">KOSPI · KOSDAQ</div>
+      <div class="gauge-wrapper">
+        <svg class="gauge-svg" viewBox="0 0 280 185" id="gauge-kr"></svg>
+      </div>
+      <div class="score-display">
+        <div class="score-number" id="kr-score">--</div>
+        <div class="score-label" id="kr-label">계산 중</div>
+      </div>
+      <div class="indicators-mini" id="kr-indicators"></div>
+    </div>
+  </div>
+
+  <!-- FORMULA -->
+  <div class="formula-section">
+    <div class="section-title">수식 구성 — CNN 방식 → KOSPI 적용</div>
+    <div class="formula-grid">
+      <div class="formula-item">
+        <div class="formula-num">01</div>
+        <div class="formula-title">시장 모멘텀</div>
+        <div class="formula-us">US: S&P500 vs 125일 이동평균</div>
+        <div class="formula-kr">KR: KOSPI vs 125일 이동평균 (^KS11)</div>
+        <span class="tag tag-same">동일 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">02</div>
+        <div class="formula-title">주가 강도</div>
+        <div class="formula-us">US: NYSE 52주 고점 vs 저점 종목 수</div>
+        <div class="formula-kr">KR: KOSPI 52주 신고가 vs 신저가 종목 수</div>
+        <span class="tag tag-adapted">한국 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">03</div>
+        <div class="formula-title">주가 폭</div>
+        <div class="formula-us">US: NYSE 상승/하락 거래량 비율 (McClellan)</div>
+        <div class="formula-kr">KR: KOSPI 상승/하락 종목 수 비율</div>
+        <span class="tag tag-adapted">한국 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">04</div>
+        <div class="formula-title">풋/콜 옵션</div>
+        <div class="formula-us">US: CBOE 풋/콜 비율 (5일 평균)</div>
+        <div class="formula-kr">KR: KRX KOSPI200 옵션 풋/콜 비율</div>
+        <span class="tag tag-same">동일 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">05</div>
+        <div class="formula-title">시장 변동성</div>
+        <div class="formula-us">US: VIX vs 50일 이동평균</div>
+        <div class="formula-kr">KR: VKOSPI vs 50일 이동평균</div>
+        <span class="tag tag-same">동일 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">06</div>
+        <div class="formula-title">정크본드 수요</div>
+        <div class="formula-us">US: 하이일드채 vs 투자등급채 스프레드</div>
+        <div class="formula-kr">KR: 회사채(BBB-) vs 국채 3년 스프레드</div>
+        <span class="tag tag-adapted">한국 적용</span>
+      </div>
+      <div class="formula-item">
+        <div class="formula-num">07</div>
+        <div class="formula-title">안전자산 수요</div>
+        <div class="formula-us">US: 국채 vs 주식 20일 수익률 차이</div>
+        <div class="formula-kr">KR: 국고채 3년 vs KOSPI 20일 수익률 차이</div>
+        <span class="tag tag-same">동일 적용</span>
+      </div>
+    </div>
+    <div style="margin-top:20px; padding:16px; border:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); line-height:2;">
+      <span style="color:#4a9eff">FINAL SCORE</span> = Σ( normalize(indicator_i) × weight_i ) / 7<br>
+      normalize(x) = clip( (x - min) / (max - min) × 100, 0, 100 )<br>
+      <span style="color:var(--muted)">* 각 지표 동일 가중치(1/7) · 기준기간 125거래일(약 6개월)</span>
+    </div>
+  </div>
+
+  <!-- 구간별 상세 설명 -->
+  <div class="formula-section" style="margin-bottom:32px;">
+    <div class="section-title">구간별 시장 심리 해석</div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+
+      <div style="display:flex; gap:16px; align-items:stretch; border:1px solid #1e2a3a; padding:20px; position:relative; overflow:hidden;" id="zone-ef">
+        <div style="width:4px; border-radius:2px; background:#ff2d55; flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="font-size:24px;">😱</span>
+            <span style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#ff2d55;">극단적 공포</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#ff2d55; opacity:0.7;">(0~24)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a7090; margin-left:auto; border:1px solid #1e2a3a; padding:2px 10px;">0 ~ 24</span>
+          </div>
+          <div style="font-size:13px; color:#8aa0b8; line-height:1.8; margin-bottom:10px;">시장 참여자 대부분이 극도의 공포 상태. 패닉 셀링이 쏟아지며 주가가 과도하게 하락하는 구간. 역발상 투자자들이 주목하는 매수 기회일 수 있으나 추가 하락 가능성도 존재. 현금 비중을 높이고 분할 매수 전략 고려.</div>
+          <div style="font-size:12px; color:#ff2d55; font-weight:700; letter-spacing:1px;">💡 전략: 분할 매수 검토 &nbsp;·&nbsp; 현금 비중 유지 &nbsp;·&nbsp; 우량주 선별</div>
+        </div>
+      </div>
+
+      <div id="zone-f" style="display:flex; gap:16px; align-items:stretch; border:1px solid #1e2a3a; padding:20px;">
+        <div style="width:4px; border-radius:2px; background:#ff6b35; flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="font-size:24px;">😨</span>
+            <span style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#ff6b35;">공포</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#ff6b35; opacity:0.7;">(25~44)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a7090; margin-left:auto; border:1px solid #1e2a3a; padding:2px 10px;">25 ~ 44</span>
+          </div>
+          <div style="font-size:13px; color:#8aa0b8; line-height:1.8; margin-bottom:10px;">투자 심리가 위축된 상태. 매도 압력이 우세하며 불확실성이 높음. 역사적으로 이 구간에서 중장기 매수 시 수익률이 양호한 경향. 섣부른 추격 매도보다는 포트폴리오 점검이 필요한 시점.</div>
+          <div style="font-size:12px; color:#ff6b35; font-weight:700; letter-spacing:1px;">💡 전략: 포트폴리오 점검 &nbsp;·&nbsp; 우량주 저가 매수 기회 탐색</div>
+        </div>
+      </div>
+
+      <div id="zone-n" style="display:flex; gap:16px; align-items:stretch; border:1px solid #1e2a3a; padding:20px;">
+        <div style="width:4px; border-radius:2px; background:#ffd60a; flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="font-size:24px;">😐</span>
+            <span style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#ffd60a;">중립</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#ffd60a; opacity:0.7;">(45~54)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a7090; margin-left:auto; border:1px solid #1e2a3a; padding:2px 10px;">45 ~ 54</span>
+          </div>
+          <div style="font-size:13px; color:#8aa0b8; line-height:1.8; margin-bottom:10px;">공포와 탐욕이 균형을 이루는 상태. 시장이 방향성을 탐색하는 구간으로 변동성이 낮아지는 경향. 추세 전환의 신호를 주시하며 기존 포지션 유지가 적합. 다음 방향성 확인 후 전략 수정 권장.</div>
+          <div style="font-size:12px; color:#ffd60a; font-weight:700; letter-spacing:1px;">💡 전략: 기존 포지션 유지 &nbsp;·&nbsp; 방향성 확인 후 대응</div>
+        </div>
+      </div>
+
+      <div id="zone-g" style="display:flex; gap:16px; align-items:stretch; border:1px solid #1e2a3a; padding:20px;">
+        <div style="width:4px; border-radius:2px; background:#30d158; flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="font-size:24px;">😏</span>
+            <span style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#30d158;">탐욕</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#30d158; opacity:0.7;">(55~74)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a7090; margin-left:auto; border:1px solid #1e2a3a; padding:2px 10px;">55 ~ 74</span>
+          </div>
+          <div style="font-size:13px; color:#8aa0b8; line-height:1.8; margin-bottom:10px;">투자자들이 수익에 대한 기대감으로 적극적 매수에 나서는 상태. 상승 모멘텀이 강하나 과열 신호에 주의. 보유 종목의 수익 실현을 검토하고 신규 매수 시 리스크 관리 필수. 고평가 종목 비중 축소 고려.</div>
+          <div style="font-size:12px; color:#30d158; font-weight:700; letter-spacing:1px;">💡 전략: 수익 일부 실현 &nbsp;·&nbsp; 리스크 관리 강화 &nbsp;·&nbsp; 신규 매수 신중</div>
+        </div>
+      </div>
+
+      <div id="zone-eg" style="display:flex; gap:16px; align-items:stretch; border:1px solid #1e2a3a; padding:20px;">
+        <div style="width:4px; border-radius:2px; background:#00e5ff; flex-shrink:0;"></div>
+        <div style="flex:1;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="font-size:24px;">🤑</span>
+            <span style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:#00e5ff;">극단적 탐욕</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#00e5ff; opacity:0.7;">(75~100)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#5a7090; margin-left:auto; border:1px solid #1e2a3a; padding:2px 10px;">75 ~ 100</span>
+          </div>
+          <div style="font-size:13px; color:#8aa0b8; line-height:1.8; margin-bottom:10px;">시장이 과열된 버블 상태. 모든 뉴스가 호재로 해석되며 FOMO(놓칠 것에 대한 두려움) 매수가 폭증. 역사적으로 주요 고점 직전에 나타나는 패턴. 워런 버핏의 "남들이 탐욕스러울 때 두려워하라"는 교훈이 가장 유효한 구간.</div>
+          <div style="font-size:12px; color:#00e5ff; font-weight:700; letter-spacing:1px;">💡 전략: 적극적 수익 실현 &nbsp;·&nbsp; 현금 비중 확대 &nbsp;·&nbsp; 신규 매수 자제</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-section">
+    <div class="section-title">30일 추이</div>
+    <canvas id="history-canvas"></canvas>
+  </div>
+
+  <button class="btn-refresh" onclick="fetchAll()">↻ 새로고침</button>
+
+  <footer>
+    * 실시간 데이터: Yahoo Finance API (yfinance) 기반<br>
+    * KOSPI 지수는 CNN 방식을 한국 시장 데이터로 재계산한 추정치입니다<br>
+    * 투자 의사결정의 참고 지표로만 활용하세요
+  </footer>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  COLOR SYSTEM
+// ─────────────────────────────────────────────
+function getColor(score) {
+  if (score < 25) return '#ff2d55';
+  if (score < 45) return '#ff6b35';
+  if (score < 55) return '#ffd60a';
+  if (score < 75) return '#30d158';
+  return '#00e5ff';
+}
+function getLabel(score) {
+  if (score < 25) return '극단적 공포';
+  if (score < 45) return '공포';
+  if (score < 55) return '중립';
+  if (score < 75) return '탐욕';
+  return '극단적 탐욕';
+}
+
+// ─────────────────────────────────────────────
+//  GAUGE DRAWING
+// ─────────────────────────────────────────────
+function drawGauge(svgId, score) {
+  const svg = document.getElementById(svgId);
+  svg.innerHTML = '';
+  // 수평 반원: 왼쪽(0점)→위쪽(50점)→오른쪽(100점)
+  // cx=140(중앙), cy=125(하단), r=105
+  const cx = 140, cy = 140, r = 108, strokeW = 16;
+
+  // 세그먼트: 180도(왼쪽)~0도(오른쪽), 위로 반원
+  // polarToXY에서 angle=0→오른쪽, 각도는 시계반대방향
+  function polarToXY(deg, radius) {
+    const rad = deg * Math.PI / 180;
+    return { x: cx + radius * Math.cos(rad), y: cy - radius * Math.sin(rad) };
+  }
+
+  function arcPath(startDeg, endDeg, radius) {
+    const s = polarToXY(startDeg, radius);
+    const e = polarToXY(endDeg, radius);
+    // 왼쪽(180)→오른쪽(0): 반시계방향으로 위로 호를 그림
+    return `M ${s.x} ${s.y} A ${radius} ${radius} 0 0 1 ${e.x} ${e.y}`;
+  }
+
+  const clampedScore = Math.max(0, Math.min(100, score));
+  const color = getColor(score);
+
+  // 배경 트랙 (180도→0도)
+  const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  bgPath.setAttribute('d', arcPath(180, 0, r));
+  bgPath.setAttribute('stroke', '#1e2a3a');
+  bgPath.setAttribute('stroke-width', strokeW);
+  bgPath.setAttribute('fill', 'none');
+  bgPath.setAttribute('stroke-linecap', 'butt');
+  svg.appendChild(bgPath);
+
+  // 컬러 세그먼트 (5구간)
+  const segs = [
+    { from: 180, to: 144, color: '#ff2d55' },
+    { from: 144, to: 108, color: '#ff6b35' },
+    { from: 108, to:  72, color: '#ffd60a' },
+    { from:  72, to:  36, color: '#30d158' },
+    { from:  36, to:   0, color: '#00e5ff' },
+  ];
+  segs.forEach(seg => {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', arcPath(seg.from, seg.to, r));
+    p.setAttribute('stroke', seg.color);
+    p.setAttribute('stroke-width', strokeW - 4);
+    p.setAttribute('fill', 'none');
+    p.setAttribute('opacity', '0.35');
+    svg.appendChild(p);
+  });
+
+  // 활성 호: 180도에서 score 비율만큼
+  const activeDeg = 180 - (clampedScore / 100) * 180;
+  const activePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  activePath.setAttribute('d', arcPath(180, activeDeg, r));
+  activePath.setAttribute('stroke', color);
+  activePath.setAttribute('stroke-width', strokeW);
+  activePath.setAttribute('fill', 'none');
+  activePath.setAttribute('stroke-linecap', 'round');
+  svg.appendChild(activePath);
+
+  // 바늘 dot
+  const np = polarToXY(activeDeg, r);
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('cx', np.x); dot.setAttribute('cy', np.y); dot.setAttribute('r', 7);
+  dot.setAttribute('fill', color);
+  dot.setAttribute('filter', `drop-shadow(0 0 8px ${color})`);
+  svg.appendChild(dot);
+
+  // 눈금 라벨: 0, 25, 50, 75, 100
+  [[0,180],[25,135],[50,90],[75,45],[100,0]].forEach(([label, deg]) => {
+    const lp = polarToXY(deg, r + 18);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', lp.x); t.setAttribute('y', lp.y);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('dominant-baseline', 'middle');
+    t.setAttribute('font-size', '10');
+    t.setAttribute('fill', '#5a7090');
+    t.setAttribute('font-family', 'JetBrains Mono, monospace');
+    t.textContent = label;
+    svg.appendChild(t);
+  });
+
+  // 점수 숫자
+  const scoreText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  scoreText.setAttribute('x', cx); scoreText.setAttribute('y', cy - 10);
+  scoreText.setAttribute('text-anchor', 'middle');
+  scoreText.setAttribute('font-size', '52');
+  scoreText.setAttribute('font-weight', 'bold');
+  scoreText.setAttribute('fill', color);
+  scoreText.setAttribute('font-family', 'Bebas Neue, sans-serif');
+  scoreText.textContent = Math.round(score);
+  svg.appendChild(scoreText);
+
+  // 라벨
+  const labelArr = ['극단적 공포','공포','중립','탐욕','극단적 탐욕'];
+  const labelIdx = score < 20 ? 0 : score < 40 ? 1 : score < 60 ? 2 : score < 80 ? 3 : 4;
+  const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  labelEl.setAttribute('x', cx); labelEl.setAttribute('y', cy + 22);
+  labelEl.setAttribute('text-anchor', 'middle');
+  labelEl.setAttribute('font-size', '13');
+  labelEl.setAttribute('font-weight', '700');
+  labelEl.setAttribute('fill', color);
+  labelEl.setAttribute('font-family', 'Pretendard, sans-serif');
+  labelEl.setAttribute('letter-spacing', '1');
+  labelEl.textContent = labelArr[labelIdx];
+  svg.appendChild(labelEl);
+}
+
+// ─────────────────────────────────────────────
+//  INDICATOR BAR
+// ─────────────────────────────────────────────
+function renderIndicators(containerId, items) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  items.forEach(({ name, value, raw, unit, barMax }) => {
+    // 바 길이: raw가 있으면 실제값 기준 스케일링, 없으면 환산값(0~100)
+    let barWidth = value;
+    if (raw !== undefined && raw !== null && barMax !== undefined) {
+      barWidth = Math.max(0, Math.min(100, (raw / barMax) * 100));
+    }
+    const color = getColor(barWidth);
+    // 숫자 표시
+    const displayVal = (raw !== undefined && raw !== null)
+      ? (raw > 0 && unit === '%' ? '+' : '') + raw + (unit || '')
+      : Math.round(value);
+    el.innerHTML += `
+      <div class="ind-row">
+        <span class="ind-name">${name}</span>
+        <div class="ind-bar-wrap">
+          <div class="ind-bar" style="width:${barWidth}%;background:${color}"></div>
+        </div>
+        <span class="ind-val" style="color:${color}">${displayVal}</span>
+      </div>`;
+  });
+}
+
+// ─────────────────────────────────────────────
+//  HISTORY CHART (canvas)
+// ─────────────────────────────────────────────
+let historyData = []; // [{date, us, kr}, ...]
+
+function drawHistory() {
+  const canvas = document.getElementById('history-canvas');
+  // offsetWidth가 0이면 다음 프레임에 재시도
+  if (!canvas.offsetWidth) { requestAnimationFrame(drawHistory); return; }
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = canvas.offsetWidth  * dpr;
+  canvas.height = canvas.offsetHeight * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  ctx.clearRect(0, 0, W, H);
+
+  // 데이터 없으면 안내 문구
+  if (historyData.length < 2) {
+    ctx.fillStyle = '#3a4a5a';
+    ctx.font = '12px Pretendard, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('데이터 수집 중... (매일 자동으로 쌓입니다)', W / 2, H / 2);
+    ctx.textAlign = 'left';
+    return;
+  }
+
+  // Grid lines at 25, 50, 75
+  [25, 50, 75].forEach(v => {
+    const y = H - (v / 100) * H;
+    ctx.beginPath();
+    ctx.strokeStyle = '#1e2a3a';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.moveTo(0, y); ctx.lineTo(W, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#5a7090';
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillText(v, 4, y - 3);
+  });
+
+  // 날짜 라벨 (7일 간격)
+  historyData.forEach((d, i) => {
+    if (i % 7 === 0 || i === historyData.length - 1) {
+      const x = historyData.length > 1 ? (i / (historyData.length - 1)) * W : W / 2;
+      ctx.fillStyle = '#3a4a5a';
+      ctx.font = '8px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(d.date.slice(5), x, H - 2); // MM-DD
+      ctx.textAlign = 'left';
+    }
+  });
+
+  function drawLine(key, color) {
+    const data = historyData.map(d => d[key]);
+    if (data.length < 2) return;
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    data.forEach((val, i) => {
+      const x = (i / (data.length - 1)) * W;
+      const y = H - (val / 100) * (H - 14);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    // Fill under
+    const lastX = W, firstX = 0;
+    ctx.lineTo(lastX, H); ctx.lineTo(firstX, H); ctx.closePath();
+    ctx.fillStyle = color + '15';
+    ctx.fill();
+  }
+
+  drawLine('us', '#4a9eff');
+  drawLine('kr', '#ff6b35');
+
+  // Legend
+  ctx.fillStyle = '#4a9eff'; ctx.fillRect(W - 120, 8, 12, 3);
+  ctx.fillStyle = '#8aa0b8'; ctx.font = '10px JetBrains Mono';
+  ctx.fillText('S&P500', W - 104, 13);
+  ctx.fillStyle = '#ff6b35'; ctx.fillRect(W - 120, 22, 12, 3);
+  ctx.fillStyle = '#8aa0b8'; ctx.fillText('KOSPI', W - 104, 27);
+}
+
+// ─────────────────────────────────────────────
+//  SIMULATE / CALCULATE
+//  In production: replace with real API calls
+//  Data from Yahoo Finance / KRX / VKOSPI
+// ─────────────────────────────────────────────
+
+function normalize(value, min, max) {
+  return Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
+}
+
+// ── API 서버 주소 (Vercel 배포 후 실제 주소로 교체) ──
+const API_URL = 'https://feargree-api.vercel.app/api';
+
+async function fetchMarketData() {
+  try {
+    const response = await fetch(API_URL, {
+      cache: 'no-store'
+    });
+    if (!response.ok) throw new Error('API 응답 오류');
+    const data = await response.json();
+
+    if (!data.success) throw new Error('데이터 로딩 실패');
+
+    function parseIndicators(indicators, fallbackScore) {
+      if (!indicators) return [{ name: '종합', value: fallbackScore }];
+      if (Array.isArray(indicators)) return indicators.map(i => ({ name: i.name, value: Number(i.value) || fallbackScore, raw: i.raw, unit: i.unit, barMax: i.barMax }));
+      return Object.entries(indicators).map(([k, v]) => ({ name: k, value: Number(v) || fallbackScore }));
+    }
+
+    return {
+      us: {
+        score: data.us.score,
+        indicators: parseIndicators(data.us.indicators, data.us.score)
+      },
+      kr: {
+        score: data.kr.score,
+        indicators: parseIndicators(data.kr.indicators, data.kr.score)
+      },
+      history: data.history || []
+    };
+  } catch (error) {
+    console.warn('API 호출 실패, 캐시 데이터 사용:', error.message);
+    // API 실패 시 마지막 성공 데이터 유지 (화면 깜빡임 방지)
+    return null;
+  }
+}
+
+async function fetchAll() {
+  document.getElementById('last-update').textContent = '● 데이터 로딩 중...';
+  document.getElementById('last-update').classList.add('pulse');
+
+  const data = await fetchMarketData();
+  if (!data) {
+    document.getElementById('last-update').textContent = '⚠ 데이터 로딩 실패 — 재시도 중...';
+    document.getElementById('last-update').classList.remove('pulse');
+    return;
+  }
+
+  // Update US
+  const usScore = Math.round(data.us.score);
+  drawGauge('gauge-us', usScore);
+  document.getElementById('us-score').textContent = usScore;
+  document.getElementById('us-score').style.color = getColor(usScore);
+  document.getElementById('us-label').textContent = getLabel(usScore);
+  document.getElementById('us-label').style.color = getColor(usScore);
+  document.getElementById('card-us').style.setProperty('--accent-color', getColor(usScore));
+  renderIndicators('us-indicators', data.us.indicators);
+
+  // Update KR
+  const krScore = Math.round(data.kr.score);
+  drawGauge('gauge-kr', krScore);
+  document.getElementById('kr-score').textContent = krScore;
+  document.getElementById('kr-score').style.color = getColor(krScore);
+  document.getElementById('kr-label').textContent = getLabel(krScore);
+  document.getElementById('kr-label').style.color = getColor(krScore);
+  document.getElementById('card-kr').style.setProperty('--accent-color', getColor(krScore));
+  renderIndicators('kr-indicators', data.kr.indicators);
+
+  // History — API에서 받은 실제 데이터 사용
+  if (data.history && data.history.length > 0) {
+    historyData = data.history;
+  } else {
+    // KV 없을 때: 오늘 데이터만 추가
+    const today = new Date().toISOString().slice(0, 10);
+    const exists = historyData.find(h => h.date === today);
+    if (!exists) historyData.push({ date: today, us: usScore, kr: krScore });
+    if (historyData.length > 30) historyData.shift();
+  }
+  requestAnimationFrame(drawHistory);
+
+  // 구간 하이라이트 (한국 지수 기준)
+  const zoneIds = ['zone-ef','zone-f','zone-n','zone-g','zone-eg'];
+  zoneIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.opacity = '0.4';
+    el.style.borderColor = '#1e2a3a';
+    el.style.boxShadow = 'none';
+    el.style.transition = 'all 0.6s ease';
+  });
+  const activeId = krScore < 25 ? 'zone-ef' : krScore < 45 ? 'zone-f' : krScore < 55 ? 'zone-n' : krScore < 75 ? 'zone-g' : 'zone-eg';
+  const activeEl = document.getElementById(activeId);
+  if (activeEl) {
+    activeEl.style.opacity = '1';
+    activeEl.style.borderColor = getColor(krScore) + '88';
+    activeEl.style.boxShadow = `0 0 24px ${getColor(krScore)}22`;
+  }
+
+  // Timestamp
+  const now = new Date();
+  document.getElementById('last-update').textContent = `● 마지막 업데이트: ${now.toLocaleTimeString('ko-KR')}`;
+  document.getElementById('last-update').classList.remove('pulse');
+}
+
+window.addEventListener('load', () => {
+  drawHistory(); // 빈 상태로 초기 렌더
+  fetchAll();
+  setInterval(fetchAll, 3600000); // 1시간마다 자동갱신
+});
+
+window.addEventListener('resize', drawHistory);
+</script>
+</body>
+</html>
