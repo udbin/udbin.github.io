@@ -940,52 +940,22 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', drawHistory);
 
 // ── 차트 마우스 툴팁 ──
-(function() {
-  function setupChartHover() {
-    const canvas = document.getElementById('history-canvas');
-    if (!canvas) return;
+const canvas = document.getElementById('history-canvas');
+canvas.style.cursor = 'crosshair';
 
-    function getHoverIndex(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const rx = (clientX - rect.left) / rect.width;
-      const idx = Math.round(rx * (historyData.length - 1));
-      return Math.max(0, Math.min(historyData.length - 1, idx));
-    }
+canvas.addEventListener('pointermove', function(e) {
+  if (historyData.length < 2) return;
+  const rect = canvas.getBoundingClientRect();
+  const rx = (e.clientX - rect.left) / rect.width;
+  const idx = Math.round(rx * (historyData.length - 1));
+  window._chartHoverIdx = Math.max(0, Math.min(historyData.length - 1, idx));
+  drawHistory();
+});
 
-    canvas.addEventListener('mousemove', function(e) {
-      if (historyData.length < 2) return;
-      window._chartHoverIdx = getHoverIndex(e);
-      drawHistory();
-    });
-    canvas.addEventListener('mouseout', function() {
-      window._chartHoverIdx = null;
-      drawHistory();
-    });
-    canvas.addEventListener('mouseleave', function() {
-      window._chartHoverIdx = null;
-      drawHistory();
-    });
-    canvas.style.cursor = 'crosshair';
-    // 모바일 터치
-    canvas.addEventListener('touchmove', function(e) {
-      if (historyData.length < 2) return;
-      e.preventDefault();
-      window._chartHoverIdx = getHoverIndex(e);
-      drawHistory();
-    }, { passive: false });
-    canvas.addEventListener('touchend', function() {
-      window._chartHoverIdx = null;
-      drawHistory();
-    });
-  }
-  // load 이벤트가 이미 지났을 수 있으므로 즉시 + load 둘 다 시도
-  if (document.readyState === 'complete') {
-    setupChartHover();
-  } else {
-    window.addEventListener('load', setupChartHover);
-  }
-})();
+canvas.addEventListener('pointerleave', function() {
+  window._chartHoverIdx = null;
+  drawHistory();
+});
 </script>
 </body>
 </html>
