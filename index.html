@@ -979,7 +979,12 @@ window.addEventListener('resize', drawHistory);
       drawHistory();
     });
   }
-  window.addEventListener('load', setupChartHover);
+  // load 이벤트가 이미 지났을 수 있으므로 즉시 + load 둘 다 시도
+  if (document.readyState === 'complete') {
+    setupChartHover();
+  } else {
+    window.addEventListener('load', setupChartHover);
+  }
 })();
 </script>
 </body>
