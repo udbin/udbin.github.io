@@ -850,16 +850,18 @@ async function fetchAll() {
   renderIndicators('kr-indicators', data.kr.indicators);
 
   // History — API에서 받은 실제 데이터 사용
+  console.log('history 수신:', data.history ? data.history.length : 'undefined');
   if (data.history && data.history.length > 0) {
     historyData = data.history;
   } else {
-    // KV 없을 때: 오늘 데이터만 추가
     const today = new Date().toISOString().slice(0, 10);
     const exists = historyData.find(h => h.date === today);
     if (!exists) historyData.push({ date: today, us: usScore, kr: krScore });
     if (historyData.length > 30) historyData.shift();
   }
-  requestAnimationFrame(drawHistory);
+  console.log('historyData 길이:', historyData.length, '첫번째:', JSON.stringify(historyData[0]));
+  drawHistory();
+  setTimeout(drawHistory, 500);
 
   // 구간 하이라이트 (한국 지수 기준)
   const zoneIds = ['zone-ef','zone-f','zone-n','zone-g','zone-eg'];
