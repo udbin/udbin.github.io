@@ -769,6 +769,46 @@ function drawHistory() {
   ctx.fillText('S&P500', W - 104, 13);
   ctx.fillStyle = '#ff6b35'; ctx.fillRect(W - 120, 22, 12, 3);
   ctx.fillStyle = '#8aa0b8'; ctx.fillText('KOSPI', W - 104, 27);
+
+  // tooltip 수직선 그리기 (hoveredIndex가 있을 때)
+  if (window._chartHoverIdx !== undefined && window._chartHoverIdx !== null) {
+    const i = window._chartHoverIdx;
+    const d = historyData[i];
+    if (d) {
+      const x = historyData.length > 1 ? (i / (historyData.length - 1)) * W : W / 2;
+      // 수직선
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.moveTo(x, 0); ctx.lineTo(x, H - 14);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // 점
+      const yUs = H - (d.us / 100) * (H - 14);
+      const yKr = H - (d.kr / 100) * (H - 14);
+      ctx.beginPath(); ctx.arc(x, yUs, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#4a9eff'; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, yKr, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#ff6b35'; ctx.fill();
+      // 툴팁 박스
+      const month = d.date.slice(5).replace('-', '/');
+      const txt1 = month;
+      const txt2 = 'US ' + d.us;
+      const txt3 = 'KR ' + d.kr;
+      const bw = 72, bh = 56, bx = Math.min(x + 8, W - bw - 4), by = 8;
+      ctx.fillStyle = 'rgba(10,20,35,0.92)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bw, bh, 6);
+      ctx.fill();
+      ctx.fillStyle = '#aabbcc'; ctx.font = 'bold 10px JetBrains Mono';
+      ctx.fillText(txt1, bx + 8, by + 16);
+      ctx.fillStyle = '#4a9eff'; ctx.font = '10px JetBrains Mono';
+      ctx.fillText(txt2, bx + 8, by + 30);
+      ctx.fillStyle = '#ff6b35';
+      ctx.fillText(txt3, bx + 8, by + 44);
+    }
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -894,6 +934,44 @@ window.addEventListener('load', () => {
 });
 
 window.addEventListener('resize', drawHistory);
+
+// ── 차트 마우스 툴팁 ──
+(function() {
+  function setupChartHover() {
+    const canvas = document.getElementById('history-canvas');
+    if (!canvas) return;
+
+    function getHoverIndex(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const rx = (clientX - rect.left) / rect.width;
+      const idx = Math.round(rx * (historyData.length - 1));
+      return Math.max(0, Math.min(historyData.length - 1, idx));
+    }
+
+    canvas.addEventListener('mousemove', function(e) {
+      if (historyData.length < 2) return;
+      window._chartHoverIdx = getHoverIndex(e);
+      drawHistory();
+    });
+    canvas.addEventListener('mouseleave', function() {
+      window._chartHoverIdx = null;
+      drawHistory();
+    });
+    // 모바일 터치
+    canvas.addEventListener('touchmove', function(e) {
+      if (historyData.length < 2) return;
+      e.preventDefault();
+      window._chartHoverIdx = getHoverIndex(e);
+      drawHistory();
+    }, { passive: false });
+    canvas.addEventListener('touchend', function() {
+      window._chartHoverIdx = null;
+      drawHistory();
+    });
+  }
+  window.addEventListener('load', setupChartHover);
+})();
 </script>
 </body>
 </html>
