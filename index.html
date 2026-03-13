@@ -521,6 +521,82 @@
 
   <button class="btn-refresh" onclick="fetchAll()">↻ 새로고침</button>
 
+
+  <!-- 콘텐츠 보강 섹션 -->
+  <div style="background:var(--surface); border:1px solid var(--border); padding:32px; margin-bottom:32px;">
+    <div class="section-title">공포탐욕지수란 무엇인가요?</div>
+    <p style="color:#8899aa; line-height:1.8; margin:16px 0;">
+      공포탐욕지수(Fear &amp; Greed Index)는 주식시장 투자자들의 심리 상태를 0~100점으로 수치화한 지표입니다.
+      미국 CNN이 S&amp;P500을 기준으로 개발했으며, 본 사이트에서는 동일한 방식을 KOSPI·KOSDAQ에 적용해
+      한국 시장의 공포탐욕지수를 실시간으로 산출하고 있습니다.
+    </p>
+    <p style="color:#8899aa; line-height:1.8; margin:16px 0;">
+      지수가 0에 가까울수록 투자자들이 극도의 공포를 느끼며 매도 압력이 높아진 상태를 의미하고,
+      100에 가까울수록 탐욕이 극대화되어 과열된 시장 상태를 나타냅니다.
+      워런 버핏의 명언 "남들이 공포에 떨 때 탐욕스러워져라"처럼, 극단적 공포 구간은 역사적으로
+      장기 투자자에게 매수 기회가 되어온 경우가 많습니다.
+    </p>
+
+    <div class="section-title" style="margin-top:32px;">구간별 투자 전략 가이드</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+      <div style="background:#0d1a2a; border:1px solid #1e2a3a; border-radius:8px; padding:20px;">
+        <div style="color:#e05555; font-weight:bold; margin-bottom:8px;">😱 극단적 공포 (0~24점)</div>
+        <p style="color:#6a8099; font-size:14px; line-height:1.7;">
+          시장이 극도의 공포에 지배된 상태입니다. 과거 코로나 폭락(2020년 3월),
+          금리 충격(2022년 10월) 등 주요 저점 근처에서 나타났습니다.
+          분할 매수 전략을 고려해볼 수 있으나 추가 하락 가능성도 배제할 수 없습니다.
+        </p>
+      </div>
+      <div style="background:#0d1a2a; border:1px solid #1e2a3a; border-radius:8px; padding:20px;">
+        <div style="color:#e08855; font-weight:bold; margin-bottom:8px;">😨 공포 (25~44점)</div>
+        <p style="color:#6a8099; font-size:14px; line-height:1.7;">
+          투자자들이 불안감을 느끼며 리스크 자산을 줄이는 상태입니다.
+          안전자산 수요가 높아지고 변동성이 확대됩니다.
+          신중한 분할 매수 접근이 권장됩니다.
+        </p>
+      </div>
+      <div style="background:#0d1a2a; border:1px solid #1e2a3a; border-radius:8px; padding:20px;">
+        <div style="color:#aabb44; font-weight:bold; margin-bottom:8px;">😐 중립 (45~55점)</div>
+        <p style="color:#6a8099; font-size:14px; line-height:1.7;">
+          시장이 균형 상태를 유지하고 있습니다.
+          공포도 탐욕도 지배하지 않는 중립적인 심리 상태로,
+          보유 포지션을 유지하며 다음 방향성을 관찰하기 좋은 시점입니다.
+        </p>
+      </div>
+      <div style="background:#0d1a2a; border:1px solid #1e2a3a; border-radius:8px; padding:20px;">
+        <div style="color:#44bb44; font-weight:bold; margin-bottom:8px;">😏 탐욕 / 🤑 극단적 탐욕 (56~100점)</div>
+        <p style="color:#6a8099; font-size:14px; line-height:1.7;">
+          시장이 과열 상태입니다. 투자자들의 낙관론이 지나치게 높아진 상태로
+          고평가 리스크가 존재합니다. 신규 매수보다 수익 실현을 고려하고
+          현금 비중을 높이는 전략이 유효합니다.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:32px;">자주 묻는 질문 (FAQ)</div>
+    <div style="margin-top:16px;">
+      <div style="border-bottom:1px solid #1e2a3a; padding:16px 0;">
+        <div style="color:#ccd6e0; font-weight:bold; margin-bottom:8px;">Q. 공포탐욕지수는 얼마나 자주 업데이트되나요?</div>
+        <div style="color:#6a8099; line-height:1.7;">실시간으로 업데이트됩니다. 한국 시장(KOSPI·KOSDAQ)은 한국투자증권 Open API를 통해,
+        미국 시장(S&amp;P500)은 CNN Fear &amp; Greed Index를 기반으로 데이터를 수집합니다.</div>
+      </div>
+      <div style="border-bottom:1px solid #1e2a3a; padding:16px 0;">
+        <div style="color:#ccd6e0; font-weight:bold; margin-bottom:8px;">Q. 한국 공포탐욕지수는 어떻게 계산되나요?</div>
+        <div style="color:#6a8099; line-height:1.7;">CNN의 계산 방식을 한국 시장에 적용합니다. KOSPI·KOSDAQ 등락률, VKOSPI(한국판 변동성 지수),
+        주가 강도, 안전자산 수요 등 7개 지표를 종합하여 산출합니다.</div>
+      </div>
+      <div style="border-bottom:1px solid #1e2a3a; padding:16px 0;">
+        <div style="color:#ccd6e0; font-weight:bold; margin-bottom:8px;">Q. 공포탐욕지수만으로 투자 결정을 해도 되나요?</div>
+        <div style="color:#6a8099; line-height:1.7;">공포탐욕지수는 시장 심리를 파악하는 참고 지표입니다. 단독으로 투자 결정에 활용하기보다
+        다른 기술적·기본적 분석과 함께 사용하는 것을 권장합니다. 모든 투자의 책임은 투자자 본인에게 있습니다.</div>
+      </div>
+      <div style="padding:16px 0;">
+        <div style="color:#ccd6e0; font-weight:bold; margin-bottom:8px;">Q. 미국과 한국 지수가 차이나는 이유는?</div>
+        <div style="color:#6a8099; line-height:1.7;">미국과 한국 시장은 서로 다른 경제 환경, 투자자 구성, 유동성을 가지고 있어 심리 지수가
+        다르게 형성될 수 있습니다. 미국 시장의 공포가 한국에 전이되기까지 시차가 발생하기도 합니다.</div>
+      </div>
+    </div>
+  </div>
   <footer>
     * 실시간 데이터: Yahoo Finance API (yfinance) 기반<br>
     * KOSPI 지수는 CNN 방식을 한국 시장 데이터로 재계산한 추정치입니다<br>
