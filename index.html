@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -722,7 +722,7 @@ function drawGauge(svgId, score) {
 
   // 라벨
   const labelArr = ['극단적 공포','공포','중립','탐욕','극단적 탐욕'];
-  const labelIdx = score < 20 ? 0 : score < 40 ? 1 : score < 60 ? 2 : score < 80 ? 3 : 4;
+  const labelIdx = score < 25 ? 0 : score < 45 ? 1 : score < 55 ? 2 : score < 75 ? 3 : 4;
   const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   labelEl.setAttribute('x', cx); labelEl.setAttribute('y', cy + 22);
   labelEl.setAttribute('text-anchor', 'middle');
