@@ -556,28 +556,31 @@
     const start = (currentPage - 1) * PER_PAGE;
     const items = COMMENTS.slice(start, start + PER_PAGE);
 
-    list.innerHTML = items.map((c, i) => {
+    list.innerHTML = items.map(function(c, i) {
       const isLast = i === items.length - 1 && start + i === COMMENTS.length - 1;
-      return \`<div style="margin-top:20px; \${!isLast ? 'padding-bottom:24px; border-bottom:1px solid #1e2a3a;' : ''}">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
-          <span style="color:#5a7090; font-size:13px;">\${c.date}</span>
-          <span style="background:#1e2a3a; color:\${c.us.color}; padding:2px 10px; border-radius:20px; font-size:12px;">🇺🇸 \${c.us.score} \${c.us.label}</span>
-          <span style="background:#1e2a3a; color:\${c.kr.color}; padding:2px 10px; border-radius:20px; font-size:12px;">🇰🇷 \${c.kr.score} \${c.kr.label}</span>
-          \${c.blog ? `<a href="\${c.blog}" target="_blank" rel="noopener" style="margin-left:auto; display:inline-flex; align-items:center; gap:6px; background:#1e2a3a; color:#4a9eff; padding:4px 14px; border-radius:20px; font-size:12px; text-decoration:none; border:1px solid #2a3a4a;">📝 블로그 자세히 보기</a>` : \`\`}\n        </div>
-        <p style="color:#8899aa; line-height:1.9; font-size:14px; margin:0;">\${c.text}</p>
-      </div>\`;
+      const border = isLast ? '' : 'padding-bottom:24px; border-bottom:1px solid #1e2a3a;';
+      const blogBtn = c.blog
+        ? '<a href="' + c.blog + '" target="_blank" rel="noopener" style="margin-left:auto; display:inline-flex; align-items:center; gap:6px; background:#1e2a3a; color:#4a9eff; padding:4px 14px; border-radius:20px; font-size:12px; text-decoration:none; border:1px solid #2a3a4a;">📝 블로그 자세히 보기</a>'
+        : '';
+      return '<div style="margin-top:20px; ' + border + '">'
+        + '<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">'
+        + '<span style="color:#5a7090; font-size:13px;">' + c.date + '</span>'
+        + '<span style="background:#1e2a3a; color:' + c.us.color + '; padding:2px 10px; border-radius:20px; font-size:12px;">🇺🇸 ' + c.us.score + ' ' + c.us.label + '</span>'
+        + '<span style="background:#1e2a3a; color:' + c.kr.color + '; padding:2px 10px; border-radius:20px; font-size:12px;">🇰🇷 ' + c.kr.score + ' ' + c.kr.label + '</span>'
+        + blogBtn
+        + '</div>'
+        + '<p style="color:#8899aa; line-height:1.9; font-size:14px; margin:0;">' + c.text + '</p>'
+        + '</div>';
     }).join('');
 
-    // 페이지네이션 버튼
     if (totalPages <= 1) { pagination.innerHTML = ''; return; }
-    pagination.innerHTML = Array.from({length: totalPages}, (_, i) => i + 1).map(p =>
-      \`<button onclick="goPage(\${p})" style="
-        width:32px; height:32px; border-radius:6px; border:1px solid \${p === currentPage ? '#4a9eff' : '#1e2a3a'};
-        background:\${p === currentPage ? '#4a9eff22' : 'transparent'};
-        color:\${p === currentPage ? '#4a9eff' : '#5a7090'};
-        cursor:pointer; font-size:13px; font-family:inherit;
-      ">\${p}</button>\`
-    ).join('');
+    pagination.innerHTML = Array.from({length: totalPages}, function(_, i) { return i + 1; }).map(function(p) {
+      return '<button onclick="goPage(' + p + ')" style="'
+        + 'width:32px; height:32px; border-radius:6px; border:1px solid ' + (p === currentPage ? '#4a9eff' : '#1e2a3a') + ';'
+        + 'background:' + (p === currentPage ? '#4a9eff22' : 'transparent') + ';'
+        + 'color:' + (p === currentPage ? '#4a9eff' : '#5a7090') + ';'
+        + 'cursor:pointer; font-size:13px; font-family:inherit;">' + p + '</button>';
+    }).join('');
   }
 
   function goPage(p) {
