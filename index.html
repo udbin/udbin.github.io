@@ -303,6 +303,36 @@
   .pulse { animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
+  /* TOP NAV */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .top-nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .top-nav-links { display: flex; gap: 20px; margin-left: auto; flex-wrap: wrap; }
+  .top-nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .top-nav-links a:hover { color: var(--text); }
+  .top-nav-links a.active { color: var(--text); }
+
   /* DISCLAIMER */
   footer {
     text-align: center;
@@ -337,6 +367,16 @@
 </head>
 <body>
 <div class="container">
+
+  <nav class="top-nav">
+    <a href="/" class="top-nav-logo">FEAR &amp; GREED</a>
+    <div class="top-nav-links">
+      <a href="/" class="active">대시보드</a>
+      <a href="/about.html">소개</a>
+      <a href="/guide.html">투자 가이드</a>
+      <a href="/history.html">시황 아카이브</a>
+    </div>
+  </nav>
 
   <header>
     <div class="header-badge">REAL-TIME SENTIMENT TRACKER</div>
@@ -868,6 +908,12 @@
     * 실시간 데이터: Yahoo Finance API (yfinance) 기반<br>
     * KOSPI 지수는 CNN 방식을 한국 시장 데이터로 재계산한 추정치입니다<br>
     * 투자 의사결정의 참고 지표로만 활용하세요<br><br>
+    <a href="/about.html" style="color:#4a9eff; text-decoration:none;">소개</a>
+    &nbsp;|&nbsp;
+    <a href="/guide.html" style="color:#4a9eff; text-decoration:none;">투자 가이드</a>
+    &nbsp;|&nbsp;
+    <a href="/history.html" style="color:#4a9eff; text-decoration:none;">시황 아카이브</a>
+    &nbsp;|&nbsp;
     <a href="/terms.html" style="color:#4a9eff; text-decoration:none;">이용약관</a>
     &nbsp;|&nbsp;
     <a href="/privacy.html" style="color:#4a9eff; text-decoration:none;">개인정보처리방침</a>
