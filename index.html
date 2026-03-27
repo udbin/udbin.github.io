@@ -303,37 +303,6 @@
   .pulse { animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* TOP NAV */
-  .top-nav {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-bottom: 40px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .top-nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--text);
-    text-decoration: none;
-  }
-  .top-nav-links { display: flex; gap: 20px; margin-left: auto; flex-wrap: wrap; }
-  .top-nav-links a {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--muted);
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .top-nav-links a:hover { color: var(--text); }
-  .top-nav-links a.active { color: var(--text); }
-
   /* DISCLAIMER */
   footer {
     text-align: center;
@@ -368,16 +337,6 @@
 </head>
 <body>
 <div class="container">
-
-  <nav class="top-nav">
-    <a href="/" class="top-nav-logo">FEAR &amp; GREED</a>
-    <div class="top-nav-links">
-      <a href="/" class="active">대시보드</a>
-      <a href="/about.html">소개</a>
-      <a href="/guide.html">투자 가이드</a>
-      <a href="/history.html">시황 아카이브</a>
-    </div>
-  </nav>
 
   <header>
     <div class="header-badge">REAL-TIME SENTIMENT TRACKER</div>
@@ -587,6 +546,13 @@
 
   <script>
   const COMMENTS = [
+    {
+      date: '2026년 3월 27일 (금)',
+      us: { score: 18, label: '극단적공포', color: '#e05555' },
+      kr: { score: 28, label: '공포', color: '#ff6b35' },
+      blog: 'https://blog.naver.com/qrator_bin/224231103503',
+      text: '미국이 18점으로 어제 19점 대비 1포인트 추가 하락하며 극단적 공포가 지속되고 있습니다. 한국은 어제 42점에서 오늘 28점으로 14포인트 급락하며 공포 구간 하단까지 내려앉았습니다. 이번 주 초 70점 탐욕에서 단 4거래일 만에 28점 공포로 42포인트 폭락하는 극심한 변동성을 보였습니다. 방산주(한화에어로 -4.0%, LIG넥스원 -5.84%)가 일제히 급락하며 지수를 끌어내렸고, 외국인 순매도가 2거래일 연속 지속됐습니다. 미국-이란 협상 공식 확인 여부가 다음 주 방향성을 결정할 최대 변수입니다.'
+    },
     {
       date: '2026년 3월 26일 (목)',
       us: { score: 19, label: '극단적공포', color: '#e05555' },
@@ -909,12 +875,6 @@
     * 실시간 데이터: Yahoo Finance API (yfinance) 기반<br>
     * KOSPI 지수는 CNN 방식을 한국 시장 데이터로 재계산한 추정치입니다<br>
     * 투자 의사결정의 참고 지표로만 활용하세요<br><br>
-    <a href="/about.html" style="color:#4a9eff; text-decoration:none;">소개</a>
-    &nbsp;|&nbsp;
-    <a href="/guide.html" style="color:#4a9eff; text-decoration:none;">투자 가이드</a>
-    &nbsp;|&nbsp;
-    <a href="/history.html" style="color:#4a9eff; text-decoration:none;">시황 아카이브</a>
-    &nbsp;|&nbsp;
     <a href="/terms.html" style="color:#4a9eff; text-decoration:none;">이용약관</a>
     &nbsp;|&nbsp;
     <a href="/privacy.html" style="color:#4a9eff; text-decoration:none;">개인정보처리방침</a>
