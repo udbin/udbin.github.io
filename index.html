@@ -444,6 +444,12 @@
     </div>
   </div>
 
+  <!-- 30-DAY TREND -->
+  <div class="history-section">
+    <div class="section-title">30일 추이</div>
+    <canvas id="history-canvas"></canvas>
+  </div>
+
   <!-- FORMULA -->
   <div class="formula-section">
     <div class="section-title">수식 구성 — CNN 방식 → KOSPI 적용</div>
@@ -593,13 +599,6 @@
 
   <script>
   const COMMENTS = [
-    {
-      date: '2026년 7월 28일 (화)',
-      us: { score: 40, label: '공포', color: '#ff6b35' },
-      kr: { score: 46, label: '중립', color: '#4a9eff' },
-      blog: 'https://blog.naver.com/qrator_bin/224360101448',
-      text: '미국 40점 +1P 안정. 한국 46점 -17P, 탐욕(63점)에서 중립 복귀, 과열 해소. 18차 역전법칙 +24P→+6P 축소, ±10P 이내 복귀 해소.'
-    },
     {
       date: '2026년 7월 27일 (월)',
       us: { score: 39, label: '공포', color: '#ff6b35' },
@@ -1411,10 +1410,6 @@
   renderComments();
   </script>
 
-  <div class="history-section">
-    <div class="section-title">30일 추이</div>
-    <canvas id="history-canvas"></canvas>
-  </div>
 
 
 
