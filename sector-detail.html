@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>섹터별 공포탐욕지수 상세 | feargreed.co.kr</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#090c10;--surface:#0f1520;--border:#1e2a3a;--text:#e8edf5;--muted:#5a7090;--accent:#4a9eff;--green:#30d158;--orange:#ff6b35;--yellow:#ffd60a;--red:#ff2d55;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px;}
+  nav{display:flex;align-items:center;gap:16px;margin-bottom:32px;}
+  .back-link{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);text-decoration:none;}
+  .back-link:hover{color:var(--text);}
+  .hero{text-align:center;padding:24px 0 32px;}
+  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,5vw,44px);letter-spacing:2px;margin-bottom:8px;}
+  .hero-score{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;margin:16px 0 4px;}
+  .hero-label{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:1px;}
+  .hero-updated{font-size:12px;color:var(--muted);margin-top:8px;}
+  .factor-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:600px;margin:28px auto;}
+  .factor-card{background:var(--surface);border:1px solid var(--border);padding:14px 8px;text-align:center;}
+  .factor-name{font-size:11px;color:var(--muted);margin-bottom:6px;}
+  .factor-val{font-family:'Bebas Neue',sans-serif;font-size:24px;}
+  .stock-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:24px;}
+  .stock-table th{background:#141e2d;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);}
+  .stock-table td{padding:10px 8px;border-bottom:1px solid rgba(30,42,58,0.6);color:#8a9db5;text-align:center;}
+  .stock-table td.name{text-align:left;color:var(--text);}
+  .up{color:var(--green);} .down{color:var(--red);}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin:32px 0 12px;}
+  .loading{text-align:center;color:var(--muted);padding:60px 0;font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><a href="/" class="back-link">← 대시보드로 돌아가기</a></nav>
+  <div id="content"><div class="loading">불러오는 중...</div></div>
+</div>
+
+<script>
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const sectorKey = params.get('sector') || 'semi';
+
+  function scoreColor(score) {
+    if (score < 25) return '#ff2d55';
+    if (score < 45) return '#ff6b35';
+    if (score < 55) return '#ffd60a';
+    if (score < 75) return '#30d158';
+    return '#0aff9d';
+  }
+  function scoreLabel(score) {
+    if (score < 25) return '😱 극단적공포';
+    if (score < 45) return '😰 공포';
+    if (score < 55) return '😐 중립';
+    if (score < 75) return '😎 탐욕';
+    return '🚀 극단탐욕';
+  }
+  function fmt(n) { return n === null || n === undefined ? '-' : n.toLocaleString('ko-KR'); }
+
+  const content = document.getElementById('content');
+
+  try {
+    const res = await fetch(`https://feargree-api.vercel.app/api/sector-detail?sector=${sectorKey}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      content.innerHTML = `<div class="loading">${data.error || '데이터를 불러올 수 없어요.'}</div>`;
+      return;
+    }
+
+    const color = scoreColor(data.score);
+    const stockRows = (data.stocks || []).map(s => {
+      const chgClass = s.changePct > 0 ? 'up' : s.changePct < 0 ? 'down' : '';
+      const chgSign = s.changePct > 0 ? '+' : '';
+      const rangePos = (s.w52High && s.w52Low && s.w52High > s.w52Low)
+        ? (((s.price - s.w52Low) / (s.w52High - s.w52Low)) * 100).toFixed(0) + '%'
+        : '-';
+      const flowQty = (s.foreignQty !== null && s.orgQty !== null) ? (s.foreignQty + s.orgQty) : null;
+      const flowClass = flowQty > 0 ? 'up' : flowQty < 0 ? 'down' : '';
+      return `
+        <tr>
+          <td class="name">${s.name}</td>
+          <td>${fmt(s.price)}</td>
+          <td class="${chgClass}">${chgSign}${s.changePct !== null ? s.changePct.toFixed(2) : '-'}%</td>
+          <td>${rangePos}</td>
+          <td>${s.volRatio !== null ? s.volRatio.toFixed(2) + 'x' : '-'}</td>
+          <td class="${flowClass}">${flowQty !== null ? fmt(flowQty) : '-'}</td>
+        </tr>`;
+    }).join('');
+
+    content.innerHTML = `
+      <div class="hero">
+        <div class="hero-title">${data.label} 공포탐욕지수</div>
+        <div class="hero-score" style="color:${color};">${data.score}</div>
+        <div class="hero-label" style="color:${color};">${scoreLabel(data.score)}</div>
+        <div class="hero-updated">최종 갱신: ${data.updatedAt ? new Date(data.updatedAt).toLocaleString('ko-KR') : '-'}</div>
+      </div>
+
+      <div class="factor-grid">
+        <div class="factor-card"><div class="factor-name">모멘텀</div><div class="factor-val">${data.factors?.모멘텀 ?? '-'}</div></div>
+        <div class="factor-card"><div class="factor-name">시장폭</div><div class="factor-val">${data.factors?.시장폭 ?? '-'}</div></div>
+        <div class="factor-card"><div class="factor-name">시장강도</div><div class="factor-val">${data.factors?.시장강도 ?? '-'}</div></div>
+        <div class="factor-card"><div class="factor-name">변동성</div><div class="factor-val">${data.factors?.변동성 ?? '-'}</div></div>
+        <div class="factor-card"><div class="factor-name">자금흐름</div><div class="factor-val">${data.factors?.자금흐름 ?? '-'}</div></div>
+      </div>
+
+      <div class="section-label">📋 종목별 데이터 (시가총액 상위 10개)</div>
+      <table class="stock-table">
+        <tr><th>종목명</th><th>현재가</th><th>등락률</th><th>52주위치</th><th>변동성비율</th><th>외인+기관 순매수(주)</th></tr>
+        ${stockRows}
+      </table>
+    `;
+  } catch (e) {
+    content.innerHTML = `<div class="loading">오류: ${e.message}</div>`;
+  }
+})();
+</script>
+</body>
+</html>
