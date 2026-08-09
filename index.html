@@ -224,6 +224,9 @@
   .ind-name { color: var(--muted); }
   .ind-bar-wrap { flex: 1; height: 3px; background: var(--border); margin: 0 12px; border-radius: 2px; }
   .ind-bar { height: 100%; border-radius: 2px; transition: width 1.5s ease, background 1s ease; }
+  .ind-bar-wrap-center { position: relative; background: var(--border); }
+  .ind-bar-center-line { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: rgba(255,255,255,0.25); }
+  .ind-bar-center { position: absolute; top: 0; height: 100%; border-radius: 2px; transition: width 1.5s ease, left 1.5s ease, background 1s ease; }
   .ind-val {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -1819,13 +1822,44 @@ function renderIndicators(containerId, items) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
   items.forEach(({ name, value, raw, unit, barMax }) => {
-    // 바 길이: raw가 있으면 실제값 기준 스케일링, 없으면 환산값(0~100)
+    // [변경됨] %·%p 단위(등락률류)는 0을 중심으로 양쪽으로 뻗는 막대로 표시
+    //          -> 음수라고 막대가 안 보이던 문제 해결
+    const isSymmetric = (unit === '%' || unit === '%p') && raw !== undefined && raw !== null && barMax !== undefined;
+
+    let barHtml;
+    if (isSymmetric) {
+      const pct = Math.max(-100, Math.min(100, (raw / barMax) * 100)); // -100~100
+      const halfWidth = Math.min(50, Math.abs(pct) / 2);               // 중앙 기준 최대 50%까지
+      const color = raw >= 0 ? '#30d158' : '#ff2d55';                  // 양수 초록, 음수 빨강
+      if (raw >= 0) {
+        barHtml = `
+          <div class="ind-bar-wrap ind-bar-wrap-center">
+            <div class="ind-bar-center-line"></div>
+            <div class="ind-bar-center" style="left:50%; width:${halfWidth}%; background:${color};"></div>
+          </div>`;
+      } else {
+        barHtml = `
+          <div class="ind-bar-wrap ind-bar-wrap-center">
+            <div class="ind-bar-center-line"></div>
+            <div class="ind-bar-center" style="left:${50 - halfWidth}%; width:${halfWidth}%; background:${color};"></div>
+          </div>`;
+      }
+      const displayVal = (raw > 0 ? '+' : '') + raw + (unit || '');
+      el.innerHTML += `
+        <div class="ind-row">
+          <span class="ind-name">${name}</span>
+          ${barHtml}
+          <span class="ind-val" style="color:${color}">${displayVal}</span>
+        </div>`;
+      return;
+    }
+
+    // 기존 방식 (0~100 절대값 지표: VKOSPI, 종합심리 등)
     let barWidth = value;
     if (raw !== undefined && raw !== null && barMax !== undefined) {
       barWidth = Math.max(0, Math.min(100, (raw / barMax) * 100));
     }
     const color = getColor(barWidth);
-    // 숫자 표시
     const displayVal = (raw !== undefined && raw !== null)
       ? (raw > 0 && unit === '%' ? '+' : '') + raw + (unit || '')
       : Math.round(value);
