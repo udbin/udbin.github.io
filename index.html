@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+<!--
+  ★★★ 메인 대시보드 (index.html) ★★★
+  이 파일에는 반드시 다음이 포함되어 있어야 합니다:
+  1. 미국/한국 공포탐욕지수 게이지
+  2. 섹터별 공포탐욕지수 카드 (반도체/2차전지/바이오/방산) ← sector-section
+  3. 30일 히스토리 그래프
+
+  업로드 전 Ctrl+F로 "sector-section" 검색해서 이 파일에 있는지 꼭 확인하세요.
+  없다면 옛날 백업 파일을 잘못 올리시는 중입니다 — 이 파일을 다시 받아서 사용하세요.
+
+  ※ index.html과 kospi-fear-greed.html은 완전 동일한 파일이어야 합니다.
+     하나를 수정하면 반드시 둘 다 같이 교체하세요.
+
+  최종 수정일: 2026-08-07
+-->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -206,13 +221,16 @@
     justify-content: space-between;
     font-size: 12px;
   }
-  .ind-name { color: var(--muted); }
+  .ind-name { color: var(--muted); flex: 0 0 92px; }
   .ind-bar-wrap { flex: 1; height: 3px; background: var(--border); margin: 0 12px; border-radius: 2px; }
   .ind-bar { height: 100%; border-radius: 2px; transition: width 1.5s ease, background 1s ease; }
+  .ind-bar-wrap-center { position: relative; background: var(--border); }
+  .ind-bar-center-line { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: rgba(255,255,255,0.25); }
+  .ind-bar-center { position: absolute; top: 0; height: 100%; border-radius: 2px; transition: width 1.5s ease, left 1.5s ease, background 1s ease; }
   .ind-val {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    min-width: 30px;
+    flex: 0 0 52px;
     text-align: right;
   }
 
@@ -444,7 +462,13 @@
     </div>
   </div>
 
-  <!-- FORMULA -->
+  <!-- ================================================================
+    섹터별 공포탐욕지수 카드 — 외부 위젯 파일로 분리됨 (sector-widget.js)
+    ★★★ 아래 이 2줄만 있으면 자동으로 카드가 나타납니다. 절대 지우지 마세요. ★★★
+  ================================================================ -->
+  <div id="sector-widget-root"></div>
+  <script src="/sector-widget.js"></script>
+
   <div class="formula-section">
     <div class="section-title">수식 구성 — CNN 방식 → KOSPI 적용</div>
     <div class="formula-grid">
@@ -593,41 +617,6 @@
 
   <script>
   const COMMENTS = [
-    {
-      date: '2026년 8월 10일 (월)',
-      us: { score: 64, label: '탐욕', color: '#30d158' },
-      kr: { score: 68, label: '탐욕', color: '#30d158' },
-      blog: 'https://blog.naver.com/qrator_bin/224373717999',
-      text: '미국 64점 변동없음. 한국 68점 +15P, 지난주 극변동 이후 탐욕권 진입. 격차 -11P→+4P, 23차 역전법칙 해소, 안정권 진입.'
-    },
-    {
-      date: '2026년 8월 9일 (일) · 주간결산',
-      us: { score: 64, label: '탐욕', color: '#30d158' },
-      kr: { score: 53, label: '중립', color: '#ffd60a' },
-      blog: 'https://blog.naver.com/qrator_bin/224372270180',
-      text: '미국 64점, 이번 주 꾸준한 우상향. 한국 53점, 공포~극단탐욕~공포~중립을 오간 극변동 한 주. 역전법칙 21~23차 사흘 연속 발동.'
-    },
-    {
-      date: '2026년 8월 7일 (금)',
-      us: { score: 60, label: '탐욕', color: '#30d158' },
-      kr: { score: 36, label: '공포', color: '#ff6b35' },
-      blog: 'https://blog.naver.com/qrator_bin/224370749919',
-      text: '미국 60점 변동없음. 한국 36점, 전일 극단탐욕(79점) 대비 -43P 대폭락. 극단탐욕 후 급락 패턴 재현. 격차 +19P→-24P, 23차 역전법칙 발동.'
-    },
-    {
-      date: '2026년 8월 6일 (목)',
-      us: { score: 60, label: '탐욕', color: '#30d158' },
-      kr: { score: 79, label: '극단탐욕', color: '#0aff9d' },
-      blog: 'https://blog.naver.com/qrator_bin/224369637968',
-      text: '미국 60점 +2P, 탐욕권 안정 상승. 한국 79점 +41P 폭등, 하루 만에 공포에서 극단탐욕 진입. 격차 -20P→+19P 부호 반전, 22차 역전법칙 발동.'
-    },
-    {
-      date: '2026년 8월 5일 (수)',
-      us: { score: 58, label: '탐욕', color: '#30d158' },
-      kr: { score: 38, label: '공포', color: '#ff6b35' },
-      blog: 'https://blog.naver.com/qrator_bin/224368527667',
-      text: '미국 58점 +12P, 나흘 연속 상승하며 탐욕권 진입. 한국 38점 -1P 보합, 공포권 지속. 격차 -7P→-20P로 확대, 21차 역전법칙 발동.'
-    },
     {
       date: '2026년 8월 4일 (화)',
       us: { score: 46, label: '중립', color: '#ffd60a' },
@@ -1833,13 +1822,44 @@ function renderIndicators(containerId, items) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
   items.forEach(({ name, value, raw, unit, barMax }) => {
-    // 바 길이: raw가 있으면 실제값 기준 스케일링, 없으면 환산값(0~100)
+    // [변경됨] %·%p 단위(등락률류)는 0을 중심으로 양쪽으로 뻗는 막대로 표시
+    //          -> 음수라고 막대가 안 보이던 문제 해결
+    const isSymmetric = (unit === '%' || unit === '%p') && raw !== undefined && raw !== null && barMax !== undefined;
+
+    let barHtml;
+    if (isSymmetric) {
+      const pct = Math.max(-100, Math.min(100, (raw / barMax) * 100)); // -100~100
+      const halfWidth = Math.min(50, Math.abs(pct) / 2);               // 중앙 기준 최대 50%까지
+      const color = raw >= 0 ? '#30d158' : '#ff2d55';                  // 양수 초록, 음수 빨강
+      if (raw >= 0) {
+        barHtml = `
+          <div class="ind-bar-wrap ind-bar-wrap-center">
+            <div class="ind-bar-center-line"></div>
+            <div class="ind-bar-center" style="left:50%; width:${halfWidth}%; background:${color};"></div>
+          </div>`;
+      } else {
+        barHtml = `
+          <div class="ind-bar-wrap ind-bar-wrap-center">
+            <div class="ind-bar-center-line"></div>
+            <div class="ind-bar-center" style="left:${50 - halfWidth}%; width:${halfWidth}%; background:${color};"></div>
+          </div>`;
+      }
+      const displayVal = (raw > 0 ? '+' : '') + raw + (unit || '');
+      el.innerHTML += `
+        <div class="ind-row">
+          <span class="ind-name">${name}</span>
+          ${barHtml}
+          <span class="ind-val" style="color:${color}">${displayVal}</span>
+        </div>`;
+      return;
+    }
+
+    // 기존 방식 (0~100 절대값 지표: VKOSPI, 종합심리 등)
     let barWidth = value;
     if (raw !== undefined && raw !== null && barMax !== undefined) {
       barWidth = Math.max(0, Math.min(100, (raw / barMax) * 100));
     }
     const color = getColor(barWidth);
-    // 숫자 표시
     const displayVal = (raw !== undefined && raw !== null)
       ? (raw > 0 && unit === '%' ? '+' : '') + raw + (unit || '')
       : Math.round(value);
