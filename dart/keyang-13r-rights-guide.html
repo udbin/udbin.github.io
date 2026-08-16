@@ -77,13 +77,13 @@
   .hero-tag{display:inline-block;background:rgba(74,158,255,0.12);border:1px solid rgba(74,158,255,0.5);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:4px 14px;letter-spacing:2px;margin-bottom:20px;text-transform:uppercase;}
   .hero-company{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);margin-bottom:10px;letter-spacing:2px;}
   .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,5vw,46px);letter-spacing:2px;line-height:1.15;margin-bottom:14px;}
-  .hero-sub{font-size:14px;color:#6a8099;line-height:1.8;max-width:680px;margin:0 auto 36px;}
+  .hero-sub{font-size:14px;color:var(--text);line-height:1.8;max-width:680px;margin:0 auto 36px;}
   .toc-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);padding:20px 24px;margin-bottom:40px;}
   .toc-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase;}
   .toc-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
   .toc-list li a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
   .toc-list li a:hover{color:var(--text);}
-  .toc-list li::before{content:'→ ';color:var(--green);font-family:'JetBrains Mono',monospace;}
+  .toc-list li::before{content:'→ ';color:var(--accent);font-family:'JetBrains Mono',monospace;}
   .dart-source{background:var(--surface);border:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px;text-decoration:none;transition:border-color .2s;}
   .dart-source:hover{border-color:var(--accent);}
   .ds-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
@@ -91,32 +91,32 @@
   .section{margin-bottom:44px;}
   .section-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;}
   .section h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:16px;}
-  .section p{font-size:15px;color:#8a9db5;line-height:1.9;margin-bottom:12px;}
+  .section p{font-size:15px;color:var(--text);line-height:1.9;margin-bottom:12px;}
   .easy-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);padding:22px 26px;margin-bottom:20px;}
   .easy-box .eb-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;}
-  .easy-box p{font-size:14px;color:#8a9db5;line-height:1.9;margin-bottom:8px;}
+  .easy-box p{font-size:14px;color:var(--text);line-height:1.9;margin-bottom:8px;}
   .easy-box p:last-child{margin-bottom:0;}
   .warn-box{background:var(--surface);border:1px solid rgba(255,107,53,0.3);border-left:3px solid var(--orange);padding:22px 26px;margin-bottom:20px;}
   .warn-box .wb-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;margin-bottom:12px;text-transform:uppercase;}
-  .warn-box p{font-size:14px;color:#8a9db5;line-height:1.9;margin-bottom:8px;}
+  .warn-box p{font-size:14px;color:var(--text);line-height:1.9;margin-bottom:8px;}
   .warn-box strong{color:var(--text);}
   .sched-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}
   .sched-table th{background:#141e2d;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 12px;text-align:center;border-bottom:1px solid var(--border);}
-  .sched-table td{padding:11px 12px;border-bottom:1px solid rgba(30,42,58,0.6);color:#8a9db5;text-align:center;}
+  .sched-table td{padding:11px 12px;border-bottom:1px solid rgba(30,42,58,0.6);color:var(--text);text-align:center;}
   .sched-table td:first-child{text-align:left;color:var(--text);font-weight:600;}
-  .sched-table .highlight td{color:var(--yellow);font-weight:700;background:rgba(255,214,10,0.05);}
+  .sched-table .highlight td{color:var(--accent);font-weight:700;background:rgba(74,158,255,0.08);}
   .sched-table .done td{color:var(--muted);}
   .summary-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14px;}
   .summary-table th{background:#141e2d;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
-  .summary-table td{padding:11px 14px;border-bottom:1px solid rgba(30,42,58,0.6);color:#8a9db5;}
-  .summary-table td:first-child{color:var(--muted);font-size:13px;width:190px;}
+  .summary-table td{padding:11px 14px;border-bottom:1px solid rgba(30,42,58,0.6);color:var(--text);}
+  .summary-table td:first-child{color:var(--text);font-size:13px;width:190px;}
   .summary-table td strong{color:var(--text);}
   .summary-table tr:last-child td{border-bottom:none;}
   .faq-item{border-bottom:1px solid var(--border);padding:16px 0;}
   .faq-q{color:var(--text);font-weight:bold;margin-bottom:8px;font-size:14px;}
-  .faq-a{color:var(--muted);line-height:1.8;font-size:14px;}
+  .faq-a{color:var(--text);line-height:1.8;font-size:14px;}
   .fg-link-box{background:var(--surface);border:1px solid rgba(74,158,255,0.3);border-left:3px solid var(--accent);padding:16px 20px;margin-bottom:32px;}
-  .fg-link-box p{font-size:13px;color:#8a9db5;margin-bottom:6px;}
+  .fg-link-box p{font-size:13px;color:var(--text);margin-bottom:6px;}
   .fg-link-box a{color:var(--accent);text-decoration:none;font-size:13px;}
   .post-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:48px;}
   .post-nav a{background:var(--surface);border:1px solid var(--border);padding:16px 20px;text-decoration:none;transition:border-color .2s;}
@@ -192,7 +192,7 @@
   <div class="section-label">① 기본 개념</div>
   <h2>계양전기13R이 정확히 무엇인가요?</h2>
 
-  <p>계양전기 주식을 갖고 계셨다면, 어느 날 계좌에 낯선 종목 <strong style="color:#ccd6e0;">"계양전기13R"</strong>이 들어와 있는 걸 보고 당황하셨을 수 있습니다. 이건 새로 산 주식이 아니라, <strong style="color:#ccd6e0;">계양전기가 유상증자(새 주식을 발행해 자금을 조달하는 것)를 하면서 기존 주주에게 준 '권리증서'</strong>입니다.</p>
+  <p>계양전기 주식을 갖고 계셨다면, 어느 날 계좌에 낯선 종목 <strong style="color:var(--text);">"계양전기13R"</strong>이 들어와 있는 걸 보고 당황하셨을 수 있습니다. 이건 새로 산 주식이 아니라, <strong style="color:var(--text);">계양전기가 유상증자(새 주식을 발행해 자금을 조달하는 것)를 하면서 기존 주주에게 준 '권리증서'</strong>입니다.</p>
 
   <div class="easy-box">
     <div class="eb-title">💡 이름의 의미 — "13R"이 뜻하는 것</div>
@@ -201,9 +201,9 @@
     <p><strong>R</strong>: Rights(권리)의 약자입니다. "신주를 살 수 있는 권리" 그 자체를 별도의 증권으로 만들어 놓은 것이라 이름에 R이 붙습니다.</p>
   </div>
 
-  <p>즉 계양전기13R을 갖고 있다는 건, <strong style="color:#ccd6e0;">"앞으로 발행될 계양전기 신주를 정해진 가격에 살 수 있는 권리"</strong>를 갖고 있다는 뜻입니다. 이 권리 자체가 주식처럼 시장에서 사고팔 수 있는 별도 상품으로 상장되는 것이 신주인수권증서입니다.</p>
+  <p>즉 계양전기13R을 갖고 있다는 건, <strong style="color:var(--text);">"앞으로 발행될 계양전기 신주를 정해진 가격에 살 수 있는 권리"</strong>를 갖고 있다는 뜻입니다. 이 권리 자체가 주식처럼 시장에서 사고팔 수 있는 별도 상품으로 상장되는 것이 신주인수권증서입니다.</p>
 
-  <p>이런 제도가 왜 있을까요? 회사가 유상증자를 하면 시장에 새 주식이 풀리면서 기존 주주가 가진 지분 비율이 자연스럽게 줄어듭니다(이를 '지분 희석'이라고 합니다). 그래서 거래소는 기존 주주에게 <strong style="color:#ccd6e0;">"손해를 보는 대신, 새 주식을 우선적으로 싸게 살 수 있는 권리"</strong>를 주고, 그 권리를 필요 없으면 시장에 팔아 보상받을 수 있도록 별도 증권(=13R)으로 만들어 상장해줍니다. 즉 13R은 계양전기 주주였던 것에 대한 일종의 '보상권'이자 '우선구매권'인 셈입니다.</p>
+  <p>이런 제도가 왜 있을까요? 회사가 유상증자를 하면 시장에 새 주식이 풀리면서 기존 주주가 가진 지분 비율이 자연스럽게 줄어듭니다(이를 '지분 희석'이라고 합니다). 그래서 거래소는 기존 주주에게 <strong style="color:var(--text);">"손해를 보는 대신, 새 주식을 우선적으로 싸게 살 수 있는 권리"</strong>를 주고, 그 권리를 필요 없으면 시장에 팔아 보상받을 수 있도록 별도 증권(=13R)으로 만들어 상장해줍니다. 즉 13R은 계양전기 주주였던 것에 대한 일종의 '보상권'이자 '우선구매권'인 셈입니다.</p>
 </div>
 
 <!-- ② 전체 일정 -->
@@ -233,7 +233,7 @@
 
   <div class="easy-box">
     <div class="eb-title">💡 거래 가능 기간: 2026년 8월 19일 ~ 8월 25일 (5거래일)</div>
-    <p>이 기간에는 계양전기13R을 <strong style="color:#ccd6e0;">일반 주식처럼 증권사 HTS·MTS에서 그대로 매도(또는 매수)</strong>할 수 있습니다. 지금 당장 현금화하고 싶다면 이 기간 안에 팔면 됩니다.</p>
+    <p>이 기간에는 계양전기13R을 <strong style="color:var(--text);">일반 주식처럼 증권사 HTS·MTS에서 그대로 매도(또는 매수)</strong>할 수 있습니다. 지금 당장 현금화하고 싶다면 이 기간 안에 팔면 됩니다.</p>
   </div>
 
   <div class="warn-box">
@@ -243,7 +243,7 @@
     <p><strong>③ 구주주 청약기간에도 아무것도 안 하면, 권리가 그냥 소멸됩니다.</strong> 신주를 받지도 못하고, 돈으로 돌려받지도 못한 채 사라집니다. 이 경우 그 몫은 '실권주'로 처리되어 일반공모로 넘어갑니다.</p>
   </div>
 
-  <p>정리하면 <strong style="color:#ccd6e0;">"지금 현금이 필요하면 8/19~8/25에 팔고, 신주를 직접 받고 싶으면 안 팔고 갖고 있다가 9/3~9/4에 청약"</strong>하시면 됩니다. 어느 쪽이든 좋지만, <strong style="color:var(--orange);">아무것도 하지 않고 그냥 두는 것만은 피해야 합니다</strong> — 그러면 권리 자체가 허무하게 사라지기 때문입니다.</p>
+  <p>정리하면 <strong style="color:var(--text);">"지금 현금이 필요하면 8/19~8/25에 팔고, 신주를 직접 받고 싶으면 안 팔고 갖고 있다가 9/3~9/4에 청약"</strong>하시면 됩니다. 어느 쪽이든 좋지만, <strong style="color:var(--orange);">아무것도 하지 않고 그냥 두는 것만은 피해야 합니다</strong> — 그러면 권리 자체가 허무하게 사라지기 때문입니다.</p>
 </div>
 
 <!-- ④ 청약 방법 -->
@@ -270,7 +270,7 @@
     <p><strong>5단계.</strong> 9월 11일 납입 완료 → 9월 29일 신주 상장, 계좌에 새 주식 입고</p>
   </div>
 
-  <p>참고로 이번 유상증자의 발행가는 <strong style="color:#ccd6e0;">기준주가 대비 20% 할인된 가격</strong>으로 산정됩니다. 1차·2차 발행가액 중 낮은 금액이 최종 확정가가 되며, 다만 그 가격이 기준주가의 60% 밑으로 지나치게 낮아지는 경우를 대비한 하한선도 정해져 있습니다. 즉 시가보다 싸게 신주를 받을 수 있다는 점에서, 청약 자체는 기존 주주에게 유리한 조건인 경우가 많지만, 실제 참여 여부는 확정 발행가액과 그 시점의 주가 흐름을 함께 보고 판단하시는 것이 좋습니다.</p>
+  <p>참고로 이번 유상증자의 발행가는 <strong style="color:var(--text);">기준주가 대비 20% 할인된 가격</strong>으로 산정됩니다. 1차·2차 발행가액 중 낮은 금액이 최종 확정가가 되며, 다만 그 가격이 기준주가의 60% 밑으로 지나치게 낮아지는 경우를 대비한 하한선도 정해져 있습니다. 즉 시가보다 싸게 신주를 받을 수 있다는 점에서, 청약 자체는 기존 주주에게 유리한 조건인 경우가 많지만, 실제 참여 여부는 확정 발행가액과 그 시점의 주가 흐름을 함께 보고 판단하시는 것이 좋습니다.</p>
 </div>
 
 <!-- feargreed 내부 링크 -->
