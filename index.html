@@ -228,6 +228,53 @@
   .ind-bar { height: 100%; border-radius: 2px; transition: width 1.5s ease, background 1s ease; }
   .ind-bar-wrap-center { position: relative; background: var(--border); }
   .ind-bar-center-line { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: rgba(255,255,255,0.25); }
+
+  /* MARKET INDEX BAR */
+  .market-index-bar {
+    display: flex;
+    gap: 12px;
+    margin: 0 0 20px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .idx-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    min-width: 160px;
+    transition: border-color 0.4s;
+  }
+  .idx-chip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    min-width: 52px;
+  }
+  .idx-chip-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .idx-chip-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .idx-chip-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .idx-up   { color: #ff2d55; }
+  .idx-down { color: #30d158; }
+  .idx-flat { color: var(--muted); }
   .ind-bar-center { position: absolute; top: 0; height: 100%; border-radius: 2px; transition: width 1.5s ease, left 1.5s ease, background 1s ease; }
   .ind-val {
     font-family: 'JetBrains Mono', monospace;
@@ -434,6 +481,22 @@
     <div class="subtitle">FEAR &amp; GREED INDEX — KOSPI &amp; S&amp;P500</div>
     <div id="last-update" class="pulse">● 데이터 로딩 중...</div>
   </header>
+
+  <!-- MARKET INDEX BAR -->
+  <div class="market-index-bar" id="market-index-bar">
+    <div class="idx-chip" id="idx-kospi">
+      <span class="idx-chip-label">KOSPI</span>
+      <span class="idx-chip-price" id="idx-kospi-price">--</span>
+      <span class="idx-chip-change idx-flat" id="idx-kospi-change">--</span>
+      <span class="idx-chip-time" id="idx-kospi-time"></span>
+    </div>
+    <div class="idx-chip" id="idx-kosdaq">
+      <span class="idx-chip-label">KOSDAQ</span>
+      <span class="idx-chip-price" id="idx-kosdaq-price">--</span>
+      <span class="idx-chip-change idx-flat" id="idx-kosdaq-change">--</span>
+      <span class="idx-chip-time" id="idx-kosdaq-time"></span>
+    </div>
+  </div>
 
   <!-- MAIN GAUGES -->
   <div class="gauges-row">
@@ -2441,6 +2504,66 @@ async function fetchMarketData() {
   }
 }
 
+// ── 코스피/코스닥 실시간 지수 ──
+const KEMIDATA_URL = 'https://kemidata-813625362143.asia-northeast3.run.app';
+
+function idxSign(sign) {
+  // KIS sign: 1=상한 2=상승 3=보합 4=하한 5=하락
+  if (sign === '1' || sign === '2') return 'up';
+  if (sign === '4' || sign === '5') return 'down';
+  return 'flat';
+}
+function idxArrow(sign) {
+  if (sign === '1' || sign === '2') return '▲';
+  if (sign === '4' || sign === '5') return '▼';
+  return '-';
+}
+
+async function fetchMarketIndex() {
+  try {
+    const res = await fetch(`${KEMIDATA_URL}/getMarketIndex`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (!json.ok || !json.data) return;
+    const { kospi, kosdaq, updatedAt } = json.data;
+
+    const timeStr = updatedAt
+      ? new Date(updatedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+      : '';
+
+    // 코스피
+    if (kospi && kospi.price) {
+      const d = idxSign(kospi.sign);
+      const price = Number(kospi.price).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const chg = `${idxArrow(kospi.sign)}${Math.abs(Number(kospi.changePct)).toFixed(2)}%`;
+      document.getElementById('idx-kospi-price').textContent = price;
+      const chgEl = document.getElementById('idx-kospi-change');
+      chgEl.textContent = chg;
+      chgEl.className = `idx-chip-change idx-${d}`;
+      document.getElementById('idx-kospi-time').textContent = timeStr;
+      document.getElementById('idx-kospi').style.borderColor =
+        d === 'up' ? 'rgba(255,45,85,0.35)' : d === 'down' ? 'rgba(48,209,88,0.35)' : '';
+    }
+
+    // 코스닥
+    if (kosdaq && kosdaq.price) {
+      const d = idxSign(kosdaq.sign);
+      const price = Number(kosdaq.price).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const chg = `${idxArrow(kosdaq.sign)}${Math.abs(Number(kosdaq.changePct)).toFixed(2)}%`;
+      document.getElementById('idx-kosdaq-price').textContent = price;
+      const chgEl = document.getElementById('idx-kosdaq-change');
+      chgEl.textContent = chg;
+      chgEl.className = `idx-chip-change idx-${d}`;
+      document.getElementById('idx-kosdaq-time').textContent = timeStr;
+      document.getElementById('idx-kosdaq').style.borderColor =
+        d === 'up' ? 'rgba(255,45,85,0.35)' : d === 'down' ? 'rgba(48,209,88,0.35)' : '';
+    }
+  } catch (e) {
+    // 실패해도 메인 지수에 영향 없음 — 조용히 무시
+    console.warn('지수 바 로딩 실패:', e.message);
+  }
+}
+
 async function fetchAll() {
   document.getElementById('last-update').textContent = '● 데이터 로딩 중...';
   document.getElementById('last-update').classList.add('pulse');
@@ -2508,6 +2631,9 @@ async function fetchAll() {
   const now = new Date();
   document.getElementById('last-update').textContent = `● 마지막 업데이트: ${now.toLocaleTimeString('ko-KR')}`;
   document.getElementById('last-update').classList.remove('pulse');
+
+  // 코스피/코스닥 실시간 지수 (실패해도 메인 UI에 영향 없음)
+  fetchMarketIndex();
 }
 
 window.addEventListener('load', () => {
