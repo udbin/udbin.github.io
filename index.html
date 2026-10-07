@@ -2505,17 +2505,19 @@ async function fetchMarketData() {
   }
 }
 
-// ── 코스피/코스닥 실시간 지수 — getAntData 응답의 indices 필드 사용 ──
+// ── 코스피/코스닥 실시간 지수 — kemidata getAntData 호출 ──
+const KEMIDATA_URL = 'https://kemidata-813625362143.asia-northeast3.run.app';
+
 function renderMarketIndex(indices) {
   if (!indices) return;
 
   function render(id, item) {
     if (!item || !item.value) return;
-    const val = Number(item.value);
-    const chgPct = Number(item.changePct);
-    const chgAbs = Number(item.change);
+    const val     = Number(item.value);
+    const chgPct  = Number(item.changePct);
+    const chgAbs  = Number(item.change);
 
-    const d = chgPct > 0 ? 'up' : chgPct < 0 ? 'down' : 'flat';
+    const d     = chgPct > 0 ? 'up' : chgPct < 0 ? 'down' : 'flat';
     const arrow = d === 'up' ? '▲' : d === 'down' ? '▼' : '-';
     const price = val.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const chgStr = `${arrow}${Math.abs(chgPct).toFixed(2)}%`;
@@ -2526,13 +2528,28 @@ function renderMarketIndex(indices) {
     chgEl.className = `idx-chip-change idx-${d}`;
     document.getElementById(`idx-${id}`).style.borderColor =
       d === 'up' ? 'rgba(255,45,85,0.35)' : d === 'down' ? 'rgba(48,209,88,0.35)' : '';
-    // change가 모두 0이면 장 외 시간 — 안내 표시
     const timeEl = document.getElementById(`idx-${id}-time`);
     timeEl.textContent = (chgPct === 0 && chgAbs === 0) ? '장외' : '';
   }
 
   render('kospi',  indices.kospi);
   render('kosdaq', indices.kosdaq);
+}
+
+async function fetchMarketIndex() {
+  try {
+    const res = await fetch(`${KEMIDATA_URL}/getAntData`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(6000)
+    });
+    if (!res.ok) return;
+    const json = await res.json();
+    // getAntData 응답 구조: { ok, cached, data: { indices: { kospi, kosdaq } } }
+    const indices = json?.data?.indices;
+    renderMarketIndex(indices);
+  } catch (e) {
+    console.warn('지수 바 로딩 실패:', e.message);
+  }
 }
 
 async function fetchAll() {
@@ -2603,8 +2620,8 @@ async function fetchAll() {
   document.getElementById('last-update').textContent = `● 마지막 업데이트: ${now.toLocaleTimeString('ko-KR')}`;
   document.getElementById('last-update').classList.remove('pulse');
 
-  // 코스피/코스닥 실시간 지수 — getAntData 응답의 indices 필드 재사용 (별도 API 호출 없음)
-  renderMarketIndex(data.indices);
+  // 코스피/코스닥 실시간 지수 — kemidata getAntData 별도 호출 (실패해도 메인 UI 영향 없음)
+  fetchMarketIndex();
 }
 
 window.addEventListener('load', () => {
