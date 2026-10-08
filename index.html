@@ -231,9 +231,9 @@
 
   /* MARKET INDEX BAR */
   .market-index-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
     margin: 0 0 20px 0;
   }
   .idx-chip {
@@ -245,13 +245,13 @@
     border-radius: 6px;
     padding: 10px 16px;
     transition: border-color 0.4s;
+    min-width: 0;
   }
   .idx-chip-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     letter-spacing: 1px;
     color: var(--muted);
-    width: 60px;
     flex-shrink: 0;
   }
   .idx-chip-price {
@@ -260,6 +260,7 @@
     color: var(--text);
     letter-spacing: 1px;
     flex: 1;
+    min-width: 0;
   }
   .idx-chip-change {
     font-family: 'JetBrains Mono', monospace;
@@ -276,6 +277,28 @@
   .idx-up   { color: #ff2d55; }
   .idx-down { color: #30d158; }
   .idx-flat { color: var(--muted); }
+
+  /* 모바일: 세로 2줄 + 한 줄에 지수·등락 모두 표시 */
+  @media (max-width: 600px) {
+    .market-index-bar {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .idx-chip {
+      padding: 10px 14px;
+      gap: 10px;
+    }
+    .idx-chip-label {
+      font-size: 11px;
+      width: 58px;
+    }
+    .idx-chip-price {
+      font-size: 20px;
+    }
+    .idx-chip-change {
+      font-size: 12px;
+    }
+  }
   .ind-bar-center { position: absolute; top: 0; height: 100%; border-radius: 2px; transition: width 1.5s ease, left 1.5s ease, background 1s ease; }
   .ind-val {
     font-family: 'JetBrains Mono', monospace;
