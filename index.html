@@ -239,11 +239,11 @@
   .idx-chip {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 10px 16px;
+    padding: 12px 20px;
     transition: border-color 0.4s;
     min-width: 0;
   }
@@ -253,6 +253,7 @@
     letter-spacing: 1px;
     color: var(--muted);
     flex-shrink: 0;
+    width: 64px;
   }
   .idx-chip-price {
     font-family: 'Bebas Neue', sans-serif;
@@ -264,9 +265,11 @@
   }
   .idx-chip-change {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     flex-shrink: 0;
+    text-align: right;
+    min-width: 72px;
   }
   .idx-chip-time {
     font-family: 'JetBrains Mono', monospace;
@@ -274,8 +277,9 @@
     color: var(--muted);
     flex-shrink: 0;
   }
+  /* 한국 증시 색상: 상승=빨강, 하락=파랑 */
   .idx-up   { color: #ff2d55; }
-  .idx-down { color: #30d158; }
+  .idx-down { color: #4da6ff; }
   .idx-flat { color: var(--muted); }
 
   /* 모바일: 세로 2줄 + 한 줄에 지수·등락 모두 표시 */
@@ -2551,7 +2555,7 @@ function renderMarketIndex(indices) {
     chgEl.textContent = chgStr;
     chgEl.className = `idx-chip-change idx-${d}`;
     document.getElementById(`idx-${id}`).style.borderColor =
-      d === 'up' ? 'rgba(255,45,85,0.35)' : d === 'down' ? 'rgba(48,209,88,0.35)' : '';
+      d === 'up' ? 'rgba(255,45,85,0.4)' : d === 'down' ? 'rgba(77,166,255,0.4)' : '';
     const timeEl = document.getElementById(`idx-${id}-time`);
     timeEl.textContent = (chgPct === 0 && chgAbs === 0) ? '장외' : '';
   }
