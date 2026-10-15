@@ -50,6 +50,11 @@
   .header-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);border:1px solid var(--border);padding:6px 16px;margin-bottom:20px;text-transform:uppercase;}
   header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,64px);letter-spacing:4px;line-height:1;background:linear-gradient(135deg,#e8edf5 0%,#5a7090 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .subtitle{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:10px;font-family:'JetBrains Mono',monospace;}
+  .status-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-family:'JetBrains Mono',monospace;}
+  .badge-danger{background:rgba(255,45,85,0.12);border:1px solid rgba(255,45,85,0.4);color:#ff2d55;}
+  .badge-warn{background:rgba(255,214,10,0.12);border:1px solid rgba(255,214,10,0.4);color:#ffd60a;}
+  .badge-ok{background:rgba(48,209,88,0.12);border:1px solid rgba(48,209,88,0.4);color:#30d158;}
+  .badge-fun{background:rgba(74,158,255,0.12);border:1px solid rgba(74,158,255,0.4);color:#4a9eff;}
   .post-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:24px;letter-spacing:1px;}
   .post-list{display:flex;flex-direction:column;gap:16px;}
   .post-item{background:var(--surface);border:1px solid var(--border);padding:28px 32px;text-decoration:none;display:block;position:relative;overflow:hidden;transition:border-color 0.2s;}
@@ -85,9 +90,26 @@
     <div class="subtitle">KOSPI · S&amp;P500 FEAR &amp; GREED DAILY REPORT</div>
   </header>
 
-  <div class="post-count">총 164개 시황 리포트 · 매일 업데이트</div>
+  <div class="post-count">총 165개 시황 리포트 · 매일 업데이트</div>
 
   <div class="post-list">
+    <a href="/blog/20261016.html" class="post-item" style="--accent:#ff2d55;">
+      <div class="post-item-meta">
+        <span class="post-item-date">2026년 10월 16일 (금)</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <span class="score-badge" style="background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.4);color:#ff2d55;">🇺🇸 32점 😨 공포</span>
+        <span class="score-badge" style="background:rgba(255,45,85,0.15);border:1px solid rgba(255,45,85,0.4);color:#ff2d55;">🇰🇷 23점 😨 극단적공포</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <span class="status-badge badge-ok">✅ 33차 역전법칙 해소</span>
+        <span class="status-badge badge-fun">📉 격차 -9P · 한국 -26P 폭락</span>
+      </div>
+      <div class="post-item-title">한국 23점 극단적 공포 · 미국 32점 — 33차 역전법칙 이틀 만에 해소</div>
+      <div class="post-item-excerpt">미국 32점(공포) 보합 · 한국 23점(극단적 공포) -26P 폭락. 코스피 -7.57% 서킷브레이커 여파, 격차 +17P→-9P 재역전, 33차 역전법칙 2일 만에 해소.</div>
+      <div class="post-item-arrow">→</div>
+    </a>
+
     <a href="/blog/20261015.html" class="post-item" style="--accent:#ffd60a;">
       <div class="post-item-meta">
         <span class="post-item-date">2026년 10월 15일 (목)</span>
