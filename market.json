@@ -1,0 +1,23 @@
+{
+  "source": "KIS",
+  "updatedAt": "2026-10-22T01:35:10.277Z",
+  "updatedAtKst": "2026-10-22 10:35",
+  "indices": {
+    "kospi": {
+      "name": "코스피",
+      "value": 5671.29,
+      "change": -64.37,
+      "changePct": -1.12,
+      "rising": 354,
+      "falling": 513
+    },
+    "kosdaq": {
+      "name": "코스닥",
+      "value": 783.68,
+      "change": -9.08,
+      "changePct": -1.15,
+      "rising": 523,
+      "falling": 1115
+    }
+  }
+}
