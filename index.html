@@ -2650,11 +2650,35 @@ function renderMarketIndex(indices) {
   render('kosdaq', indices.kosdaq);
 }
 
-// ── 1순위: GitHub Actions가 5분마다 KIS에서 받아 저장하는 JSON (market-data 브랜치) ──
+// 장외(장 마감·휴장) 표시
+function markIndexClosed() {
+  ['kospi', 'kosdaq'].forEach(id => {
+    const el = document.getElementById(`idx-${id}-time`);
+    if (el) el.textContent = '장외';
+  });
+}
+
+// ── 예비 1: GitHub Actions가 KIS에서 받아 저장하는 JSON (market-data 브랜치) ──
 const MARKET_JSON_URL = 'https://raw.githubusercontent.com/udbin/udbin.github.io/market-data/market.json';
 
 async function fetchMarketIndex() {
-  // 1) GitHub Actions JSON
+  // 1) 공포탐욕지수 API(Vercel) — KIS 실시간 지수 (서버에서 30초 캐시)
+  try {
+    const res = await fetch(API_URL, { cache: 'no-store', signal: AbortSignal.timeout(6000) });
+    if (res.ok) {
+      const json = await res.json();
+      // API 응답 구조: { ..., indices: { kospi, kosdaq, marketOpen } }
+      if (json?.indices?.kospi?.value && json?.indices?.kosdaq?.value) {
+        renderMarketIndex(json.indices);
+        if (json.indices.marketOpen === false) markIndexClosed();
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn('API 지수 로딩 실패, 예비 데이터로 전환:', e.message);
+  }
+
+  // 2) 예비: GitHub Actions JSON
   try {
     const res = await fetch(`${MARKET_JSON_URL}?t=${Date.now()}`, {
       cache: 'no-store',
@@ -2667,12 +2691,7 @@ async function fetchMarketIndex() {
         renderMarketIndex(json.indices);
         // 마지막 갱신이 15분 이상 지났으면 장 마감·휴장으로 보고 '장외' 표시
         const ageMin = (Date.now() - new Date(json.updatedAt).getTime()) / 60000;
-        if (ageMin > 15) {
-          ['kospi', 'kosdaq'].forEach(id => {
-            const el = document.getElementById(`idx-${id}-time`);
-            if (el) el.textContent = '장외';
-          });
-        }
+        if (ageMin > 15) markIndexClosed();
         return;
       }
     }
@@ -2680,7 +2699,7 @@ async function fetchMarketIndex() {
     console.warn('market.json 로딩 실패, 기존 서버로 전환:', e.message);
   }
 
-  // 2) 예비: 기존 kemidata 서버
+  // 3) 예비: 기존 kemidata 서버
   try {
     const res = await fetch(`${KEMIDATA_URL}/getAntData`, {
       cache: 'no-store',
