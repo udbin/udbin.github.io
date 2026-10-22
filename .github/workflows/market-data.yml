@@ -1,16 +1,20 @@
 # 코스피·코스닥 지수 자동 업데이트
-# 평일 09:00~16:00(한국시간) 5분마다 KIS API에서 지수를 받아
+# 평일 09:00~16:00(한국시간) KIS API에서 지수를 받아
 # market-data 브랜치의 market.json 으로 저장합니다.
 # (main 브랜치에는 커밋하지 않으므로 GitHub Pages 재배포가 일어나지 않습니다)
+#
+# ▶ 5분 주기 실행은 Google Cloud Scheduler가 담당합니다.
+#   (Cloud Scheduler → GitHub API workflow_dispatch 호출)
+# ▶ 아래 schedule 은 Cloud Scheduler가 멈췄을 때를 대비한 예비용(30분 간격)입니다.
 
 name: 코스피·코스닥 지수 업데이트
 
 on:
+  workflow_dispatch:            # Cloud Scheduler 호출 + Actions 탭 수동 실행 버튼
   schedule:
-    # GitHub 예약 시간은 UTC 기준입니다. (한국시간 = UTC + 9시간)
-    - cron: '*/5 0-6 * * 1-5'   # 한국시간 09:00 ~ 15:55, 5분마다
-    - cron: '0 7 * * 1-5'       # 한국시간 16:00 (마감 후 최종값)
-  workflow_dispatch:            # Actions 탭에서 수동 실행 버튼
+    # 예비용 — GitHub 예약 시간은 UTC 기준 (한국시간 = UTC + 9시간)
+    - cron: '17,47 0-6 * * 1-5' # 한국시간 09:17 ~ 15:47, 30분마다
+    - cron: '7 7 * * 1-5'       # 한국시간 16:07 (마감 후 최종값)
 
 permissions:
   contents: write
