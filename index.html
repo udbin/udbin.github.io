@@ -2650,7 +2650,37 @@ function renderMarketIndex(indices) {
   render('kosdaq', indices.kosdaq);
 }
 
+// ── 1순위: GitHub Actions가 5분마다 KIS에서 받아 저장하는 JSON (market-data 브랜치) ──
+const MARKET_JSON_URL = 'https://raw.githubusercontent.com/udbin/udbin.github.io/market-data/market.json';
+
 async function fetchMarketIndex() {
+  // 1) GitHub Actions JSON
+  try {
+    const res = await fetch(`${MARKET_JSON_URL}?t=${Date.now()}`, {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(6000)
+    });
+    if (res.ok) {
+      const json = await res.json();
+      // market.json 구조: { source, updatedAt, updatedAtKst, indices: { kospi, kosdaq } }
+      if (json?.indices?.kospi?.value) {
+        renderMarketIndex(json.indices);
+        // 마지막 갱신이 15분 이상 지났으면 장 마감·휴장으로 보고 '장외' 표시
+        const ageMin = (Date.now() - new Date(json.updatedAt).getTime()) / 60000;
+        if (ageMin > 15) {
+          ['kospi', 'kosdaq'].forEach(id => {
+            const el = document.getElementById(`idx-${id}-time`);
+            if (el) el.textContent = '장외';
+          });
+        }
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn('market.json 로딩 실패, 기존 서버로 전환:', e.message);
+  }
+
+  // 2) 예비: 기존 kemidata 서버
   try {
     const res = await fetch(`${KEMIDATA_URL}/getAntData`, {
       cache: 'no-store',
@@ -2733,15 +2763,15 @@ async function fetchAll() {
   const now = new Date();
   document.getElementById('last-update').textContent = `● 마지막 업데이트: ${now.toLocaleTimeString('ko-KR')}`;
   document.getElementById('last-update').classList.remove('pulse');
-
-  // 코스피/코스닥 실시간 지수 — kemidata getAntData 별도 호출 (실패해도 메인 UI 영향 없음)
-  fetchMarketIndex();
 }
 
 window.addEventListener('load', () => {
   drawHistory(); // 빈 상태로 초기 렌더
   fetchAll();
   setInterval(fetchAll, 3600000); // 1시간마다 자동갱신
+  // 코스피·코스닥 지수는 공포탐욕 API와 별도로 불러옴 (한쪽이 실패해도 다른 쪽은 표시)
+  fetchMarketIndex();
+  setInterval(fetchMarketIndex, 300000); // 5분마다 갱신
 });
 
 window.addEventListener('resize', drawHistory);
