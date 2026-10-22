@@ -759,6 +759,13 @@
   <script>
   const COMMENTS = [
     {
+      date: '2026년 10월 23일 (금)',
+      us: { score: 20, label: '극단적공포', color: '#ff2d55' },
+      kr: { score: 27, label: '공포', color: '#ff2d55' },
+      blog: 'https://blog.naver.com/qrator_bin/224450930337',
+      text: '미국 20점(극단적공포) -11P · 한국 27점(공포) -47P 급락. 격차 +43P→+7P, 35차 역전법칙 2일 만에 해소. 33·34·35차 세 번 연속 한국 급락형.'
+    },
+    {
       date: '2026년 10월 22일 (목)',
       us: { score: 31, label: '공포', color: '#ff2d55' },
       kr: { score: 74, label: '탐욕', color: '#34c759' },
@@ -2687,10 +2694,11 @@ async function fetchMarketIndex() {
     if (res.ok) {
       const json = await res.json();
       // market.json 구조: { source, updatedAt, updatedAtKst, indices: { kospi, kosdaq } }
-      if (json?.indices?.kospi?.value) {
+      // 마지막 갱신이 6시간 넘게 지난 오래된 데이터는 쓰지 않음 (예비 Actions가 꺼져 있을 때 대비)
+      const ageMin = (Date.now() - new Date(json.updatedAt).getTime()) / 60000;
+      if (json?.indices?.kospi?.value && ageMin < 360) {
         renderMarketIndex(json.indices);
         // 마지막 갱신이 15분 이상 지났으면 장 마감·휴장으로 보고 '장외' 표시
-        const ageMin = (Date.now() - new Date(json.updatedAt).getTime()) / 60000;
         if (ageMin > 15) markIndexClosed();
         return;
       }
