@@ -759,6 +759,13 @@
   <script>
   const COMMENTS = [
     {
+      date: '2026년 11월 11일 (수)',
+      us: { score: 33, label: '공포', color: '#ff2d55' },
+      kr: { score: 81, label: '극단적탐욕', color: '#34c759' },
+      blog: 'https://blog.naver.com/qrator_bin/224472557979',
+      text: '미국 33점(공포) +1P · 한국 81점(극단적탐욕) +35P. 코스피 +4.39% 매수 사이드카, 미국 CPI 예상 상회. 격차 +48P, 39차 역전법칙 3일차 — 해소 직전에서 재확대.'
+    },
+    {
       date: '2026년 11월 10일 (화)',
       us: { score: 32, label: '공포', color: '#ff2d55' },
       kr: { score: 46, label: '중립', color: '#ffd60a' },
@@ -2900,10 +2907,10 @@ async function fetchAll() {
 window.addEventListener('load', () => {
   drawHistory(); // 빈 상태로 초기 렌더
   fetchAll();
-  setInterval(fetchAll, 3600000); // 1시간마다 자동갱신
+  setInterval(() => { if (!document.hidden) fetchAll(); }, 3600000); // 1시간마다 자동갱신 (탭이 보일 때만)
   // 코스피·코스닥 지수는 공포탐욕 API와 별도로 불러옴 (한쪽이 실패해도 다른 쪽은 표시)
   fetchMarketIndex();
-  setInterval(fetchMarketIndex, 300000); // 5분마다 갱신
+  setInterval(() => { if (!document.hidden) fetchMarketIndex(); }, 600000); // 10분마다 갱신 (탭이 보일 때만, API 사용량 절약)
 });
 
 window.addEventListener('resize', drawHistory);
